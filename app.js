@@ -19,14 +19,13 @@ const busca = document.getElementById('busca');
 const btnMinhas = document.getElementById('btnMinhas');
 const btnTodas  = document.getElementById('btnTodas');
 
-// ====== NOVO: barra de filtros por pessoa (gerada via JS) ======
+// ====== Barra de filtros por pessoa (gerada via JS) ======
 const filtroBar = document.createElement('div');
 filtroBar.id = 'filtrosPessoas';
 filtroBar.className = 'flex flex-wrap gap-2 mb-4';
 
-const controlsContainer = busca?.parentElement; // no seu HTML, input e botões estão dentro desse container
+const controlsContainer = busca?.parentElement; // input + botões (Minhas/Todas)
 if (controlsContainer) {
-  // insere logo abaixo do bloco de busca/botões
   controlsContainer.insertAdjacentElement('afterend', filtroBar);
 }
 
@@ -34,14 +33,12 @@ function renderFiltrosPessoas() {
   const keys = Object.keys(GRUPOS);
   filtroBar.innerHTML = `
     <button type="button"
-      id="btnFiltro_todas"
       class="px-3 py-2 rounded-lg border text-sm ${filtroAtual === 'todas' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'}"
       onclick="setFiltro('todas')">
       Todas
     </button>
     ${keys.map(k => `
       <button type="button"
-        id="btnFiltro_${k}"
         class="px-3 py-2 rounded-lg border text-sm ${filtroAtual === k ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-50'}"
         onclick="setFiltro('${k}')">
         👤 ${GRUPOS[k].nome} (${GRUPOS[k].ids.length})
@@ -56,7 +53,16 @@ function setFiltro(key) {
   renderFiltrosPessoas();
   render(getBaseFiltrada());
 }
-// ===============================================================
+// ========================================================
+
+// ✅ Persistência simples (1 query salva por questão)
+function getQuerySalva(numero) {
+  return localStorage.getItem('q_' + numero);
+}
+
+function setQuerySalva(numero, query) {
+  localStorage.setItem('q_' + numero, query);
+}
 
 fetch('perguntas.json')
   .then(r => r.json())
@@ -84,13 +90,11 @@ busca.addEventListener('input', () => {
 
   if (!q) return render(base);
 
-  // Se for número puro -> filtra por número exato
   if (/^\d+$/.test(q)) {
     const num = Number(q);
     return render(base.filter(p => Number(p.numero) === num));
   }
 
-  // Caso contrário -> filtra por texto no enunciado (e também aceita "número + texto")
   const nums = (q.match(/\d+/g) || []).map(Number);
 
   const filtradas = base.filter(p => {
@@ -107,14 +111,10 @@ busca.addEventListener('input', () => {
 });
 
 // ⭐ Botão: Minhas queries (Israel)
-btnMinhas?.addEventListener('click', () => {
-  setFiltro('israel');
-});
+btnMinhas?.addEventListener('click', () => setFiltro('israel'));
 
 // 🔄 Botão: Todas
-btnTodas?.addEventListener('click', () => {
-  setFiltro('todas');
-});
+btnTodas?.addEventListener('click', () => setFiltro('todas'));
 
 function getBaseFiltrada() {
   if (filtroAtual === 'todas') return perguntas;
@@ -135,18 +135,8 @@ function escapeHtml(str) {
     .replaceAll("'", "&#039;");
 }
 
-function getVersoes(n) {
-  return JSON.parse(localStorage.getItem('q_' + n) || '[]');
-}
-
-function setVersoes(n, versoes) {
-  localStorage.setItem('q_' + n, JSON.stringify(versoes));
-}
-
 function getQueryAtual(p) {
-  const versoes = getVersoes(p.numero);
-  if (versoes.length) return versoes.at(-1).query;
-  return p.query_base || "";
+  return getQuerySalva(p.numero) ?? (p.query_base || "");
 }
 
 /* ========= Ocultar/Mostrar Query (modo treino) ========= */
@@ -167,7 +157,7 @@ function toggleMostrar(n) {
   const novoOculto = !oculto;
   setOculto(n, novoOculto);
 
-  // Se estiver em modo edição, volta para visual antes de ocultar/mostrar
+  // Se estiver em modo edição, sai do modo edição (e salva automaticamente) antes de ocultar/mostrar
   if (edit && !edit.classList.contains('hidden')) {
     toggleEdit(n);
   }
@@ -199,11 +189,10 @@ function render(items) {
   const sorted = items.slice().sort((a, b) => Number(a.numero) - Number(b.numero));
 
   sorted.forEach(p => {
-    const versoes = getVersoes(p.numero);
     const queryAtual = getQueryAtual(p);
 
-    // badges
-    const badgeGrupo = filtroAtual !== 'todas' && GRUPOS[filtroAtual]
+    // badge do grupo atual (se estiver filtrando por alguém)
+    const badgeGrupo = (filtroAtual !== 'todas' && GRUPOS[filtroAtual])
       ? `<span class="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200">${GRUPOS[filtroAtual].nome}</span>`
       : '';
 
@@ -250,16 +239,6 @@ function render(items) {
           spellcheck="false">${escapeHtml(queryAtual)}</textarea>
 
         <div class="flex flex-wrap gap-2 mt-3">
-          <button type="button" onclick="salvar(${p.numero})"
-            class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
-            Salvar versão
-          </button>
-
-          <button type="button" onclick="restaurar(${p.numero})"
-            class="px-4 py-2 bg-slate-200 text-slate-900 rounded-lg hover:bg-slate-300">
-            Restaurar última
-          </button>
-
           <button type="button" onclick="copiar(${p.numero})"
             class="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
             Copiar
@@ -267,7 +246,7 @@ function render(items) {
         </div>
 
         <p class="text-xs text-slate-500 mt-3">
-          Versões salvas: ${versoes.length}
+          Salva automaticamente ao sair da edição
         </p>
       </div>
     `;
@@ -293,6 +272,7 @@ function toggleEdit(n) {
   const view = document.getElementById('view' + n);
   const edit = document.getElementById('edit' + n);
   const btnShow = document.getElementById('btnShow' + n);
+  const code = document.getElementById('code' + n);
 
   // Se estiver oculto, mostra antes de editar
   if (isOculto(n)) {
@@ -303,6 +283,7 @@ function toggleEdit(n) {
 
   const isEditing = !edit.classList.contains('hidden');
 
+  // Entrar em edição
   if (!isEditing) {
     edit.classList.remove('hidden');
     view.classList.add('hidden');
@@ -310,48 +291,19 @@ function toggleEdit(n) {
     return;
   }
 
+  // Sair da edição -> salvar automaticamente (somente se mudou)
+  const nova = edit.value;
+  const atualSalva = getQuerySalva(n);
+
+  if (atualSalva !== nova) {
+    setQuerySalva(n, nova);
+  }
+
+  // Atualiza visual
+  code.textContent = nova;
+
   view.classList.remove('hidden');
   edit.classList.add('hidden');
-
-  const code = document.getElementById('code' + n);
-  code.textContent = edit.value;
-
-  if (window.Prism) Prism.highlightAll();
-}
-
-function salvar(n) {
-  const edit = document.getElementById('edit' + n);
-  const isEditing = edit && !edit.classList.contains('hidden');
-
-  const query = isEditing
-    ? edit.value
-    : document.getElementById('code' + n).textContent;
-
-  const versoes = getVersoes(n);
-  versoes.push({
-    data: new Date().toLocaleString(),
-    query
-  });
-  setVersoes(n, versoes);
-
-  if (edit) edit.value = query;
-  const code = document.getElementById('code' + n);
-  if (code) code.textContent = query;
-
-  if (window.Prism) Prism.highlightAll();
-}
-
-function restaurar(n) {
-  const versoes = getVersoes(n);
-  if (!versoes.length) return;
-
-  const ultima = versoes.at(-1).query;
-
-  const edit = document.getElementById('edit' + n);
-  const code = document.getElementById('code' + n);
-
-  if (edit) edit.value = ultima;
-  if (code) code.textContent = ultima;
 
   if (window.Prism) Prism.highlightAll();
 }
@@ -373,7 +325,7 @@ function copiar(n) {
       setTimeout(() => {
         btn.textContent = original;
         btn.classList.remove('bg-emerald-700');
-      }, 1000);
+      }, 900);
     });
   }).catch(() => {
     const ta = document.createElement('textarea');

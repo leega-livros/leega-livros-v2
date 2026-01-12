@@ -30,64 +30,67 @@
 
 <body class="bg-slate-100 text-slate-900 min-h-screen">
   <div class="max-w-6xl mx-auto p-6">
-<header class="mb-6">
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <!-- Logo + Títulos -->
-    <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-      <img
-        src="logo.png"
-        alt="Leega"
-        class="h-12 sm:h-10 w-auto object-contain self-start sm:self-auto"
-      />
 
-      <div>
-        <h1 class="text-2xl sm:text-3xl font-semibold leading-tight">
-          Queries do Case — Biblioteca
-        </h1>
-        <p class="text-slate-600">
-          Editar, versionar e treinar consultas SQL
-        </p>
-      </div>
-    </div>
+    <header class="mb-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <!-- Logo + Títulos -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+          <img
+            src="logo.png"
+            alt="Leega"
+            class="h-12 sm:h-10 w-auto object-contain self-start sm:self-auto"
+          />
 
-    <!-- Info (i) -->
-    <div class="relative group self-start sm:self-auto">
-      <button
-        type="button"
-        aria-label="Informações"
-        class="h-10 w-10 rounded-full border border-slate-300 bg-white text-slate-700 flex items-center justify-center font-semibold hover:bg-slate-50"
-      >
-        i
-      </button>
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-semibold leading-tight">
+              Queries do Case — Biblioteca
+            </h1>
+            <p class="text-slate-600">
+              Editar e treinar consultas SQL
+            </p>
+          </div>
+        </div>
 
-      <div
-        class="hidden group-hover:block absolute right-0 mt-2 w-[520px] max-w-[90vw] rounded-xl border border-slate-200 bg-white shadow-lg p-4 text-sm text-slate-800 z-50"
-      >
-        <div class="space-y-2 leading-relaxed">
-          <div>👤 João (12 questões)<br>1, 6, 10, 14, 17, 20, 24, 31, 35, 41, 51, 58</div>
-          <div>👤 Marlom (12 questões)<br>2, 5, 11, 15, 18, 21, 25, 33, 36, 43, 52, 56</div>
-          <div>👤 Sergio (12 questões)<br>3, 7, 9, 16, 19, 22, 28, 34, 39, 46, 53, 57</div>
-          <div>👤 Israel (eu) (11 questões)<br>4, 8, 12, 23, 26, 30, 38, 44, 48, 54, 55</div>
-          <div>👤 Mozart (11 questões)<br>13, 27, 29, 32, 37, 40, 42, 45, 47, 49, 50</div>
+        <!-- Info (i) -->
+        <div class="relative group self-start sm:self-auto">
+          <button
+            type="button"
+            aria-label="Informações"
+            class="h-10 w-10 rounded-full border border-slate-300 bg-white text-slate-700 flex items-center justify-center font-semibold hover:bg-slate-50"
+          >
+            i
+          </button>
+
+          <div
+            class="hidden group-hover:block absolute right-0 mt-2 w-[520px] max-w-[90vw] rounded-xl border border-slate-200 bg-white shadow-lg p-4 text-sm text-slate-800 z-50"
+          >
+            <div class="space-y-2 leading-relaxed">
+              <div>👤 João (12 questões)<br>1, 6, 10, 14, 17, 20, 24, 31, 35, 41, 51, 58</div>
+              <div>👤 Marlom (12 questões)<br>2, 5, 11, 15, 18, 21, 25, 33, 36, 43, 52, 56</div>
+              <div>👤 Sergio (12 questões)<br>3, 7, 9, 16, 19, 22, 28, 34, 39, 46, 53, 57</div>
+              <div>👤 Israel (eu) (11 questões)<br>4, 8, 12, 23, 26, 30, 38, 44, 48, 54, 55</div>
+              <div>👤 Mozart (11 questões)<br>13, 27, 29, 32, 37, 40, 42, 45, 47, 49, 50</div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</header>
+    </header>
 
-
-
-
+    <!-- Busca + atalhos -->
     <div class="flex flex-col sm:flex-row gap-3 mb-4">
-        <input 
+      <input
         id="busca"
         placeholder="Buscar por número (ex: 4) ou texto (ex: multa, editora, devolução)"
         class="w-full px-4 py-3 rounded-xl bg-white border border-slate-300 outline-none focus:ring-2 focus:ring-slate-300"
-        />
+      >
+
+      <!-- Mantidos para compatibilidade com seu app.js -->
 
 
       </button>
     </div>
+
+    <!-- A barra de filtros por pessoa é inserida pelo app.js logo abaixo deste bloco -->
 
     <div id="lista" class="space-y-6"></div>
   </div>
