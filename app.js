@@ -205,7 +205,7 @@ function render(items) {
             <div class="flex items-center gap-2">
               <h2 class="text-xl font-semibold mb-1">Questão ${p.numero}</h2>
               ${badgeGrupo}
-              ${isIsrael ? `<span class="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 border border-blue-200">minha</span>` : ``}
+
             </div>
             <p class="text-slate-700 mb-3">${escapeHtml(p.pergunta)}</p>
           </div>
