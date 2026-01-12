@@ -30,17 +30,18 @@
 
 <body class="bg-slate-100 text-slate-900 min-h-screen">
   <div class="max-w-6xl mx-auto p-6">
-    <header class="mb-6">
-  <div class="flex items-center justify-between gap-4 mb-4">
-    <div class="flex items-center gap-4">
+<header class="mb-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <!-- Logo + Títulos -->
+    <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
       <img
         src="logo.png"
         alt="Leega"
-        class="h-10 w-auto object-contain"
+        class="h-12 sm:h-10 w-auto object-contain self-start sm:self-auto"
       />
 
       <div>
-        <h1 class="text-3xl font-semibold leading-tight">
+        <h1 class="text-2xl sm:text-3xl font-semibold leading-tight">
           Queries do Case — Biblioteca
         </h1>
         <p class="text-slate-600">
@@ -49,8 +50,8 @@
       </div>
     </div>
 
-    <!-- Ícone de informações com tooltip -->
-    <div class="relative group">
+    <!-- Info (i) -->
+    <div class="relative group self-start sm:self-auto">
       <button
         type="button"
         aria-label="Informações"
@@ -59,7 +60,6 @@
         i
       </button>
 
-      <!-- Tooltip -->
       <div
         class="hidden group-hover:block absolute right-0 mt-2 w-[520px] max-w-[90vw] rounded-xl border border-slate-200 bg-white shadow-lg p-4 text-sm text-slate-800 z-50"
       >
@@ -74,6 +74,7 @@
     </div>
   </div>
 </header>
+
 
 
 
