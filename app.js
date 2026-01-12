@@ -3,14 +3,14 @@ let perguntas = [];
 // ✅ Grupos / responsáveis
 const GRUPOS = {
   joao:   { nome: "João",   ids: [1, 6, 10, 14, 17, 20, 24, 31, 35, 41, 51, 58] },
-  marlom: { nome: "Marlom", ids: [2, 5, 11, 15, 18, 21, 25, 33, 36, 43, 52, 56] },
+  marlon: { nome: "Marlon", ids: [2, 5, 11, 15, 18, 21, 25, 33, 36, 43, 52, 56] },
   sergio: { nome: "Sergio", ids: [3, 7, 9, 16, 19, 22, 28, 34, 39, 46, 53, 57] },
   israel: { nome: "Israel", ids: [4, 8, 12, 23, 26, 30, 38, 44, 48, 54, 55] },
   mozart: { nome: "Mozart", ids: [13, 27, 29, 32, 37, 40, 42, 45, 47, 49, 50] }
 };
 
 // ✅ Estado do filtro
-let filtroAtual = 'todas'; // 'todas' | 'joao' | 'marlom' | 'sergio' | 'israel' | 'mozart'
+let filtroAtual = 'todas'; // 'todas' | 'joao' | 'marlon' | 'sergio' | 'israel' | 'mozart'
 
 const lista = document.getElementById('lista');
 const busca = document.getElementById('busca');
