@@ -52,8 +52,7 @@
   {
     "numero": 11,
     "pergunta": "O Financeiro precisa saber qual é o livro que possui a menor quantidade em estoque e quantas vezes ele foi emprestado para que seja feita uma análise para compra de mais alguns exemplares.",
-    "query_base": "SELECT O.Titulo_Obra, E.Quantidade_Livro, COUNT(Emp.ID_Emprestimo) AS Vezes_Emprestado \nFROM Obra O \nJOIN Estoque E ON O.ID_Obra = E.ID_Obra \nLEFT \nJOIN Emprestimo Emp ON E.ID_Estoque = Emp.ID_Estoque \nGROUP BY O.Titulo_Obra, E.Quantidade_Livro \nORDER BY E.Quantidade_Livro ASC \nLIMIT 1;"
-  },
+    "query_base": "SELECT O.Titulo_Obra, E.Quantidade_Livro, COUNT(Emp.ID_Emprestimo) AS Vezes_Emprestado\nFROM Obra O\nJOIN Estoque E ON O.ID_Obra = E.ID_Obra\nLEFT JOIN Emprestimo Emp ON E.ID_Estoque = Emp.ID_Estoque\nGROUP BY O.Titulo_Obra, E.Quantidade_Livro\nORDER BY E.Quantidade_Livro ASC\nLIMIT 1;"  },
   {
     "numero": 12,
     "pergunta": "A área de RH precisa identificar a quantidade total dos empréstimos feitos por cada funcionário ativo",
@@ -72,7 +71,7 @@
   {
     "numero": 15,
     "pergunta": "A Recepcionista Alice Meire solicitou a alteração do bairro do usuário ‘Alberto Roberto’ que morava no ‘IAPI’ e agora mora no bairro de ‘Perdizes’.",
-    "query_base": "UPDATE Endereco \nSET Bairro = 'Perdizes' \nWHERE ID_Endereco = (\nSELECT ID_Endereco \nFROM Usuario \nWHERE Nome_Usuario = 'Alberto Roberto');"
+    "query_base": "SET SQL_SAFE_UPDATES = 0;\n\nUPDATE Endereco \nSET Bairro = 'Perdizes' \nWHERE ID_Endereco = (SELECT ID_Endereco FROM Usuario WHERE Nome_Usuario = 'Alberto Roberto');\n\nSET SQL_SAFE_UPDATES = 1;"
   },
   {
     "numero": 16,
@@ -87,8 +86,7 @@
   {
     "numero": 18,
     "pergunta": "Gerência solicitou uma consulta para verificar se existe duplicidade de usuários no Banco de Dados.",
-    "query_base": "SELECT CPF, COUNT(*) \nFROM Usuario \nGROUP BY CPF \nHAVING COUNT(*) > 1;"
-  },
+    "query_base": "SELECT CPF, COUNT(*) \nFROM Usuario \nGROUP BY CPF \nHAVING COUNT(*) > 1;"  },
   {
     "numero": 19,
     "pergunta": "A Recepção recebeu a informação que existem dois usuários duplicados na base, será necessária a exclusão de um desses registros.",
@@ -102,7 +100,7 @@
   {
     "numero": 21,
     "pergunta": "A Consultoria verificou que o campo Multa_Atraso está com o tamanho Varchar (2), foi solicitada a alteração do campo para Varchar(3)",
-    "query_base": "ALTER TABLE Devolucao MODIFY COLUMN Multa_Atraso VARCHAR(3);"
+    "query_base": "ALTER TABLE Devolucao MODIFY COLUMN Multa_Atraso VARCHAR(3);"  
   },
   {
     "numero": 22,
@@ -122,7 +120,7 @@
   {
     "numero": 25,
     "pergunta": "A Gerência solicitou a lista de todos os livros, cujos autores não são brasileiros, que já foram devolvidos e o valor total de cada livro.",
-    "query_base": "SELECT O.Titulo_Obra, A.Nome_Autor, E.Valor_Unitario \nFROM Devolucao D \nJOIN Emprestimo Emp ON D.ID_Emprestimo = Emp.ID_Emprestimo \nJOIN Estoque E ON Emp.ID_Estoque = E.ID_Estoque \nJOIN Obra O ON E.ID_Obra = O.ID_Obra \nJOIN Autor A ON O.ID_Autor = A.ID_Autor;"
+    "query_base": "SELECT O.Titulo_Obra, A.Nome_Autor, E.Valor_Unitario\nFROM Devolucao D\nJOIN Emprestimo Emp ON D.ID_Emprestimo = Emp.ID_Emprestimo\nJOIN Estoque E ON Emp.ID_Estoque = E.ID_Estoque\nJOIN Obra O ON E.ID_Obra = O.ID_Obra\nJOIN Autor A ON O.ID_Autor = A.ID_Autor;"  
   },
   {
     "numero": 26,
@@ -161,7 +159,7 @@
   {
     "numero": 33,
     "pergunta": "A área de RH solicitou a atualização do salário do Auxiliar Financeiro de 12% sobre o seu salário atual.",
-    "query_base": "UPDATE Cargo \nSET Salario = Salario * 1.12 \nWHERE Nome_Cargo = 'Auxiliar Financeiro';"
+    "query_base": "SET SQL_SAFE_UPDATES = 0;\n\nUPDATE Cargo SET Salario = Salario * 1.12 WHERE Nome_Cargo = 'Auxiliar Financeiro';\n\nSET SQL_SAFE_UPDATES = 1;"  
   },
   {
     "numero": 34,
@@ -175,7 +173,7 @@
   {
     "numero": 36,
     "pergunta": "A Recepção solicitou uma lista como todos os funcionários da Biblioteca com código, nome, e departamento, classificado pelo nome do funcionário e que não emprestaram nenhum livro.",
-    "query_base": "SELECT F.ID_Funcionario, F.Nome_Funcionario, D.Nome_Departamento \nFROM Funcionario F \nJOIN Departamento D ON F.ID_Departamento = D.ID_Departamento \nLEFT \nJOIN Emprestimo E ON F.ID_Funcionario = E.ID_Funcionario \nWHERE E.ID_Emprestimo IS NULL;"
+    "query_base": "SELECT F.ID_Funcionario, F.Nome_Funcionario, D.Nome_Departamento\nFROM Funcionario F\nJOIN Departamento D ON F.ID_Departamento = D.ID_Departamento\nLEFT JOIN Emprestimo E ON F.ID_Funcionario = E.ID_Funcionario\nWHERE E.ID_Emprestimo IS NULL;" 
   },
   {
     "numero": 37,
@@ -210,7 +208,7 @@
   {
     "numero": 43,
     "pergunta": "É fechamento referente ao mês de janeiro (hoje dia 03/02/2013) e a biblioteca está no vermelho, foi solicitado pelo financeiro que fosse feito um levantamento de todos os livros que não foram devolvidos, mostrando quantos dias de atraso e para cada dia foi dado uma multa de 5 reais, e mostrar o nome do usuário, livro emprestado e o total a receber pela biblioteca.",
-    "query_base": "SELECT U.Nome_Usuario, O.Titulo_Obra, M.Dias_Atraso, M.Valor_Total \nFROM Financeiro_Multa M \nJOIN Emprestimo E ON M.ID_Emprestimo = E.ID_Emprestimo \nJOIN Usuario U ON E.ID_Usuario = U.ID_Usuario \nJOIN Estoque Est ON E.ID_Estoque = Est.ID_Estoque \nJOIN Obra O ON Est.ID_Obra = O.ID_Obra \nWHERE M.Status_Multa = 'Pendente';"
+    "query_base": "SELECT U.Nome_Usuario, O.Titulo_Obra, M.Dias_Atraso, M.Valor_Total\nFROM Financeiro_Multa M\nJOIN Emprestimo E ON M.ID_Emprestimo = E.ID_Emprestimo\nJOIN Usuario U ON E.ID_Usuario = U.ID_Usuario\nJOIN Estoque Est ON E.ID_Estoque = Est.ID_Estoque\nJOIN Obra O ON Est.ID_Obra = O.ID_Obra\nWHERE M.Status_Multa = 'Pendente';"
   },
   {
     "numero": 44,
@@ -255,7 +253,7 @@
   {
     "numero": 52,
     "pergunta": "A sociedade brasileira de editoras solicitou o levantamento para a biblioteca de qual são os 3 autores que tem mais livros lidos no ano de 2012 e 2013 e os 2 que tem menos obras lidas.",
-    "query_base": "(\nSELECT A.Nome_Autor, COUNT(E.ID_Emprestimo) AS Total \nFROM Autor A \nJOIN Obra O ON A.ID_Autor = O.ID_Autor \nJOIN Estoque Est ON O.ID_Obra = Est.ID_Obra \nJOIN Emprestimo E ON Est.ID_Estoque = E.ID_Estoque \nWHERE YEAR(E.Data_Emprestimo) BETWEEN 2012 AND 2013 \nGROUP BY A.Nome_Autor \nORDER BY Total DESC \nLIMIT 3) \nUNION (\nSELECT A.Nome_Autor, COUNT(E.ID_Emprestimo) AS Total \nFROM Autor A \nJOIN Obra O ON A.ID_Autor = O.ID_Autor \nJOIN Estoque Est ON O.ID_Obra = Est.ID_Obra \nJOIN Emprestimo E ON Est.ID_Estoque = E.ID_Estoque \nWHERE YEAR(E.Data_Emprestimo) BETWEEN 2012 AND 2013 \nGROUP BY A.Nome_Autor \nORDER BY Total ASC \nLIMIT 2);"
+"query_base": "(SELECT A.Nome_Autor, COUNT(E.ID_Emprestimo) as Total \n FROM Autor A JOIN Obra O ON A.ID_Autor = O.ID_Autor \n JOIN Estoque Est ON O.ID_Obra = Est.ID_Obra \n JOIN Emprestimo E ON Est.ID_Estoque = E.ID_Estoque\n WHERE YEAR(E.Data_Emprestimo) BETWEEN 2012 AND 2013\n GROUP BY A.Nome_Autor ORDER BY Total DESC LIMIT 3)\nUNION\n(SELECT A.Nome_Autor, COUNT(E.ID_Emprestimo) as Total \n FROM Autor A JOIN Obra O ON A.ID_Autor = O.ID_Autor \n JOIN Estoque Est ON O.ID_Obra = Est.ID_Obra \n JOIN Emprestimo E ON Est.ID_Estoque = E.ID_Estoque\n WHERE YEAR(E.Data_Emprestimo) BETWEEN 2012 AND 2013\n GROUP BY A.Nome_Autor ORDER BY Total ASC LIMIT 2);"
   },
   {
     "numero": 53,
@@ -275,7 +273,7 @@
   {
     "numero": 56,
     "pergunta": "A biblioteca foi comprar mais livros para aumentar seu acervo, mas a editora Saraiva aumentou em 16% o valor de seus livros, atualize os preços dos livros da editora na porcentagem designada.",
-    "query_base": "UPDATE Estoque \nSET Valor_Unitario = Valor_Unitario * 1.16 \nWHERE ID_Obra IN (\nSELECT ID_Obra \nFROM Obra O \nJOIN Editora Ed ON O.ID_Editora = Ed.ID_Editora \nWHERE Ed.Nome_Editora = 'Saraiva');"
+    "query_base": "SET SQL_SAFE_UPDATES = 0;\n\nUPDATE Estoque \nSET Valor_Unitario = Valor_Unitario * 1.16\nWHERE ID_Obra IN (SELECT ID_Obra FROM Obra O \n                  JOIN Editora Ed ON O.ID_Editora = Ed.ID_Editora \n                  WHERE Ed.Nome_Editora = 'Saraiva');\n\nSET SQL_SAFE_UPDATES = 1;"
   },
   {
     "numero": 57,
