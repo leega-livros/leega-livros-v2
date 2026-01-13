@@ -191,9 +191,17 @@ function render(items) {
   sorted.forEach(p => {
     const queryAtual = getQueryAtual(p);
 
-    // badge do grupo atual (se estiver filtrando por alguém)
-    const badgeGrupo = (filtroAtual !== 'todas' && GRUPOS[filtroAtual])
-      ? `<span class="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200">${GRUPOS[filtroAtual].nome}</span>`
+    // ✅ Badge do responsável da questão (aparece SEMPRE, inclusive em "Todas")
+    const numero = Number(p.numero);
+    const keyGrupo = Object.keys(GRUPOS).find(k => GRUPOS[k].ids.includes(numero));
+
+    // (opcional) se quiser destacar quando estiver filtrando por esse mesmo responsável:
+    const badgeClasses = (keyGrupo && filtroAtual !== 'todas' && filtroAtual === keyGrupo)
+      ? 'bg-slate-900 text-white border-slate-900'
+      : 'bg-slate-100 text-slate-700 border-slate-200';
+
+    const badgeGrupo = keyGrupo
+      ? `<span class="text-xs px-2 py-1 rounded-full border ${badgeClasses}">${GRUPOS[keyGrupo].nome}</span>`
       : '';
 
     const isIsrael = GRUPOS.israel.ids.includes(Number(p.numero));
@@ -205,7 +213,6 @@ function render(items) {
             <div class="flex items-center gap-2">
               <h2 class="text-xl font-semibold mb-1">Questão ${p.numero}</h2>
               ${badgeGrupo}
-
             </div>
             <p class="text-slate-700 mb-3">${escapeHtml(p.pergunta)}</p>
           </div>
