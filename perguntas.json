@@ -116,7 +116,7 @@
   {
     "numero": 20,
     "pergunta": "O Financeiro solicitou a inserção do valor individual de cada obra. Crie um campo com o nome ‘Valor_Livro’ na tabela Obra. Defina o tipo de dados que poderá ser aceito e o valor de cada título.",
-    "query_base": "ALTER TABLE obra\n\tADD COLUMN Valor_Livro DECIMAL(10,2) NOT NULL DEFAULT 0.00;\n\nUPDATE obra AS o\n\tINNER JOIN e AS e\n\t\tON e.ID_Obra = o.ID_Obra\n\t\t\tSET o.Valor_Livro = e.Valor_Unitario;",
+    "query_base": "ALTER TABLE obra\n\tADD COLUMN Valor_Livro DECIMAL(10,2) NOT NULL DEFAULT 0.00;\n\nUPDATE obra AS o\n\tINNER JOIN estoque AS e\n\t\tON e.ID_Obra = o.ID_Obra\n\t\t\tSET o.Valor_Livro = e.Valor_Unitario;",
     "tipos": ["ALTER", "UPDATE"]
   },
   {
