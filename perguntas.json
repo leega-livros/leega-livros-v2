@@ -61,7 +61,7 @@
   {
     "numero": 13,
     "pergunta": "A Diretoria identificar as obras com os maiores números de publicações agrupados por gênero.",
-    "query_base": "/* Se seu modelo tiver Obra.Genero (texto), use assim.\\n Se for FK (Obra.ID_Genero), ajuste o \nJOIN com a tabela Genero. */ \nSELECT o.Genero, o.ID_Obra, o.Titulo_Obra, o.Numero_Publicacao \nFROM Obra o \nJOIN ( \nSELECT Genero, MAX(Numero_Publicacao) AS Max_Publicacao \nFROM Obra \nGROUP BY Genero ) mx ON mx.Genero = o.Genero AND mx.Max_Publicacao = o.Numero_Publicacao \nORDER BY o.Genero, o.Titulo_Obra;"
+    "query_base": "select *\nfrom obra o\nwhere o.Numero_Publicacao = (\n    select MAX(o2.Numero_Publicacao)\n    from obra o2\n    where o2.Genero = o.Genero\n)\norder by o.Numero_Publicacao desc;"
   },
   {
     "numero": 14,
@@ -130,7 +130,8 @@
   {
     "numero": 27,
     "pergunta": "O Financeiro solicitou a lista de todas as obras que tiveram data de publicação menor que 04/03/2013 , sua respectiva quantidade e o seu valor unitário.",
-    "query_base": "SELECT o.ID_Obra, o.Titulo_Obra, o.Data_Publicacao, es.Quantidade_Livro, es.Valor_Unitario \nFROM Obra o \nJOIN Estoque es ON es.ID_Obra = o.ID_Obra \nWHERE o.Data_Publicacao < '2013-03-04' \nORDER BY o.Data_Publicacao, o.Titulo_Obra;"
+    "query_base": "select o.Titulo_Obra , o.Data_Publicacao , e.Quantidade_Livro , e.Valor_Unitario \nfrom obra o inner join estoque e \nwhere o.Data_Publicacao < \"2013-03-04\" and e.ID_Obra = o.ID_Obra;"
+
   },
   {
     "numero": 28,
@@ -139,7 +140,7 @@
   {
     "numero": 29,
     "pergunta": "A Gerência solicitou uma lista de todos os livros com os nomes dos autores, nomes das editoras e a quantidade de livros em estoque.",
-    "query_base": "SELECT o.ID_Obra, o.Titulo_Obra, a.Nome_Autor, ed.Nome_Editora, es.Quantidade_Livro \nFROM Obra o \nJOIN Autor a ON a.ID_Autor = o.ID_Autor \nJOIN Editora ed ON ed.ID_Editora = o.ID_Editora \nJOIN Estoque es ON es.ID_Obra = o.ID_Obra \nORDER BY o.Titulo_Obra;"
+    "query_base": "select o.Titulo_Obra , e.Nome_Editora , a.Nome_Autor , es.Quantidade_Livro   \nfrom obra o inner join autor a inner join editora e inner join estoque es \nwhere o.ID_Autor = a.ID_Autor and o.ID_Editora = e.ID_Editora and o.ID_Obra = es.ID_Obra;"
   },
   {
     "numero": 30,
@@ -154,7 +155,7 @@
   {
     "numero": 32,
     "pergunta": "A Recepção solicitou uma lista com o código do livro, nome do livro cujo valor do livro seja maior que R$ 90,00.",
-    "query_base": "SELECT o.ID_Obra AS Codigo_Livro, o.Titulo_Obra AS Livro, es.Valor_Unitario \nFROM Obra o \nJOIN Estoque es ON es.ID_Obra = o.ID_Obra \nWHERE es.Valor_Unitario > 90.00 \nORDER BY es.Valor_Unitario DESC, o.Titulo_Obra;"
+    "query_base": "select o.ID_Obra, o.Titulo_Obra , e.Valor_Unitario \nfrom obra o inner join estoque e \nwhere o.ID_Obra = e.ID_Obra and e.Valor_Unitario > 90.00"
   },
   {
     "numero": 33,
@@ -178,7 +179,7 @@
   {
     "numero": 37,
     "pergunta": "A Biblioteca solicitou uma lista que exiba a quantidade de logradouros de usuários agrupados por número do CEP.",
-    "query_base": "SELECT en.CEP, COUNT(en.Logradouro) AS Qtd_Logradouros \nFROM Usuario u \nJOIN Endereco en ON en.ID_Endereco = u.ID_Endereco \nGROUP BY en.CEP \nORDER BY en.CEP;"
+    "query_base": "select u.Nome_Usuario,\n       e.CEP,\n       COUNT(e.Logradouro) AS logradouros_por_cep\nfrom endereco e\ninner join usuario u\non u.ID_Endereco = e.ID_Endereco\ngroup by u.Nome_Usuario, e.CEP;"
   },
   {
     "numero": 38,
@@ -193,7 +194,7 @@
   {
     "numero": 40,
     "pergunta": "O financeiro solicitou o levantamento da informação de quando as usuárias Emily Mall e Whitney Cinse pegaram livros emprestados, quais foram os livros e seus respectivos valores unitários.",
-    "query_base": "SELECT u.Nome_Usuario, e.Data_Emprestimo, e.Hora_Emprestimo, o.Titulo_Obra, es.Valor_Unitario \nFROM Emprestimo e \nJOIN Usuario u ON u.ID_Usuario = e.ID_Usuario \nJOIN Estoque es ON es.ID_Estoque = e.ID_Estoque \nJOIN Obra o ON o.ID_Obra = es.ID_Obra \nWHERE u.Nome_Usuario IN ('Emily Mall', 'Whitney Cinse') \nORDER BY u.Nome_Usuario, e.Data_Emprestimo, e.Hora_Emprestimo;"
+    "query_base": "select u.Nome_Usuario, o.Titulo_Obra, es.Valor_Unitario \nfrom usuario u \ninner join emprestimo e on e.ID_Usuario = u.ID_Usuario \ninner join estoque es on e.ID_Estoque = es.ID_Estoque  \ninner join obra o on o.ID_Obra = es.ID_Obra  \nwhere u.Nome_Usuario like \"Emily Mall\" or u.Nome_Usuario like \"Whitney Cinse\""
   },
   {
     "numero": 41,
@@ -203,7 +204,7 @@
   {
     "numero": 42,
     "pergunta": "Foi solicitado pela diretoria saber quantas obras cada editora tem na biblioteca.",
-    "query_base": "SELECT ed.ID_Editora, ed.Nome_Editora, COUNT(o.ID_Obra) AS Qtd_Obras \nFROM Editora ed \nLEFT \nJOIN Obra o ON o.ID_Editora = ed.ID_Editora \nGROUP BY ed.ID_Editora, ed.Nome_Editora \nORDER BY Qtd_Obras DESC, ed.Nome_Editora;"
+    "query_base": "select e.Nome_Editora , count(o.Titulo_Obra) as qtd_titulos \nfrom obra o inner join editora e on e.ID_Editora = o.ID_Editora \ngroup by o.ID_Editora;"
   },
   {
     "numero": 43,
@@ -218,7 +219,7 @@
   {
     "numero": 45,
     "pergunta": "Chegou na biblioteca uma mensagem urgente da Camila pedindo um relatório contendo a informação de todos os livros que foram emprestados mais de uma vez nos anos de 2011 a 2013 agrupados pelo nome do livro.",
-    "query_base": "SELECT o.Titulo_Obra, COUNT(*) AS Total_Emprestimos \nFROM Emprestimo e \nJOIN Estoque es ON es.ID_Estoque = e.ID_Estoque \nJOIN Obra o ON o.ID_Obra = es.ID_Obra \nWHERE e.Data_Emprestimo BETWEEN '2011-01-01' AND '2013-12-31' \nGROUP BY o.Titulo_Obra \nHAVING COUNT(*) > 1 \nORDER BY Total_Emprestimos DESC, o.Titulo_Obra;"
+    "query_base": "select o.Titulo_Obra, em.ID_Emprestimo, em.ID_Estoque \nfrom emprestimo em\ninner join estoque es\non es.ID_Estoque = em.ID_Estoque\ninner join obra o \non o.ID_Obra = es.ID_Obra \nwhere em.id_estoque in (\n    select id_estoque\n    from emprestimo\n    group by id_estoque\n    having count(*) > 1\n)"
   },
   {
     "numero": 46,
@@ -228,7 +229,7 @@
   {
     "numero": 47,
     "pergunta": "Barbara do financeiro pediu para verificar qual a media do salario dos funcionários e quem são os que ganham mais do que a media em cada departamento.",
-    "query_base": "WITH base AS ( \nSELECT f.ID_Funcionario, f.Nome_Funcionario, d.ID_Departamento, d.Nome_Departamento, c.Salario \nFROM Funcionario f \nJOIN Departamento d ON d.ID_Departamento = f.ID_Departamento \nJOIN Cargo c ON c.ID_Cargo = f.ID_Cargo ), medias AS ( \nSELECT ID_Departamento, AVG(Salario) AS Media_Salario_Dep \nFROM base \nGROUP BY ID_Departamento ) \nSELECT b.Nome_Departamento, b.Nome_Funcionario, b.Salario, m.Media_Salario_Dep \nFROM base b \nJOIN medias m ON m.ID_Departamento = b.ID_Departamento \nWHERE b.Salario > m.Media_Salario_Dep \nORDER BY b.Nome_Departamento, b.Salario DESC, b.Nome_Funcionario;"
+    "query_base": "SELECT f.Nome_Funcionario,\n       c.Salario,\n       d.ID_Departamento,\n       m.media_salarial\nFROM funcionario f\nINNER JOIN cargo c\n    ON c.ID_Cargo = f.ID_Cargo\nINNER JOIN departamento d\n    ON d.ID_Departamento = f.ID_Departamento\nINNER JOIN (\n    SELECT f.ID_Departamento,\n           AVG(c.Salario) AS media_salarial\n    FROM funcionario f\n    INNER JOIN cargo c\n        ON c.ID_Cargo = f.ID_Cargo\n    GROUP BY f.ID_Departamento\n) m\nON m.ID_Departamento = f.ID_Departamento\nWHERE c.Salario > m.media_salarial;"
   },
   {
     "numero": 48,
@@ -238,12 +239,12 @@
   {
     "numero": 49,
     "pergunta": "A recepção pediu para verificar quais os usuários que já pegaram mais de 3 livros, e em caso positivo, mostrar nomes e quais livros, ordenando pelo CEP (crescente).",
-    "query_base": "SELECT u.Nome_Usuario, en.CEP, COUNT(e.ID_Emprestimo) AS Total_Emprestimos, GROUP_CONCAT(DISTINCT o.Titulo_Obra \nORDER BY o.Titulo_Obra SEPARATOR ', ') AS Livros \nFROM Usuario u \nJOIN Endereco en ON en.ID_Endereco = u.ID_Endereco \nJOIN Emprestimo e ON e.ID_Usuario = u.ID_Usuario \nJOIN Estoque es ON es.ID_Estoque = e.ID_Estoque \nJOIN Obra o ON o.ID_Obra = es.ID_Obra \nGROUP BY u.ID_Usuario, u.Nome_Usuario, en.CEP \nHAVING COUNT(e.ID_Emprestimo) > 3 \nORDER BY en.CEP ASC, u.Nome_Usuario;"
+    "query_base": "SELECT u.Nome_Usuario,\n       e.CEP,\n       o.Titulo_Obra\nFROM usuario u\nINNER JOIN endereco e\n    ON e.ID_Endereco = u.ID_Endereco\nINNER JOIN emprestimo em\n    ON em.ID_Usuario = u.ID_Usuario\nINNER JOIN estoque es\n    ON es.ID_Estoque = em.ID_Estoque\nINNER JOIN obra o\n    ON o.ID_Obra = es.ID_Obra\nWHERE u.ID_Usuario IN (\n    SELECT em2.ID_Usuario\n    FROM emprestimo em2\n    GROUP BY em2.ID_Usuario\n    HAVING COUNT(em2.ID_Emprestimo) > 1\n)\nORDER BY e.CEP ASC, u.Nome_Usuario;"
   },
   {
     "numero": 50,
     "pergunta": "A diretoria pediu que fosse feito uma analise do estoque, apresentando uma lista com todos os livros que já foram reservados e emprestados e, mostrar quantos estão disponíveis classificados por Gênero.",
-    "query_base": "SELECT g.Nome_Genero AS Genero, COUNT(DISTINCT o.ID_Obra) AS Qtd_Livros_Reservados_Emprestados, SUM(es.Qtd_Disponivel) AS Total_Disponivel \nFROM Obra o \nJOIN Genero g ON g.ID_Genero = o.ID_Genero \nJOIN Estoque es ON es.ID_Obra = o.ID_Obra \nWHERE EXISTS ( \nSELECT 1 \nFROM Reserva r \nWHERE r.ID_Estoque = es.ID_Estoque ) AND EXISTS ( \nSELECT 1 \nFROM Emprestimo e \nWHERE e.ID_Estoque = es.ID_Estoque ) \nGROUP BY g.Nome_Genero \nORDER BY Total_Disponivel DESC, Genero;"
+    "query_base": "SELECT o.Genero,\n       COUNT(es.ID_Estoque) AS qtd_disponiveis\nFROM estoque es\nINNER JOIN obra o\n    ON o.ID_Obra = es.ID_Obra\nLEFT JOIN reserva r\n    ON r.ID_Estoque = es.ID_Estoque\nWHERE r.ID_Estoque IS NULL\nGROUP BY o.Genero;"
   },
   {
     "numero": 51,
