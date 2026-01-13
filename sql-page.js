@@ -69,6 +69,13 @@
           </div>
 
           <div class="flex items-center gap-3">
+            <!-- ✅ NOVO: copiar no topo -->
+            <button type="button"
+              id="btnCopyTopSqlPage"
+              class="px-3 py-1.5 rounded-lg bg-slate-900 text-white text-sm hover:bg-slate-800 whitespace-nowrap">
+              Copiar
+            </button>
+
             <button type="button"
               id="btnEditSqlPage"
               class="text-sm text-blue-600 hover:underline whitespace-nowrap">
@@ -93,6 +100,7 @@
           class="hidden w-full min-h-[260px] bg-white border border-slate-300 rounded-xl p-4 font-mono text-sm text-slate-900 outline-none focus:ring-2 focus:ring-slate-200"
           spellcheck="false">${escapeHtml(atual)}</textarea>
 
+        <!-- ✅ Mantém o copiar de baixo (como você queria) -->
         <div class="flex flex-wrap gap-2 mt-3">
           <button type="button" id="btnCopySqlPage"
             class="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
@@ -110,7 +118,10 @@
     // Eventos
     const btnEdit = document.getElementById("btnEditSqlPage");
     const btnReset = document.getElementById("btnResetSqlPage");
-    const btnCopy = document.getElementById("btnCopySqlPage");
+
+    // Copiar (topo + baixo)
+    const btnCopyTop = document.getElementById("btnCopyTopSqlPage");
+    const btnCopyBottom = document.getElementById("btnCopySqlPage");
 
     const view = document.getElementById("viewSqlPage");
     const edit = document.getElementById("editSqlPage");
@@ -154,18 +165,18 @@
       if (window.Prism) Prism.highlightAll();
     });
 
-    btnCopy.addEventListener("click", async () => {
+    async function copiarSql(btn) {
       const isEditing = !edit.classList.contains("hidden");
       const text = isEditing ? edit.value : code.textContent;
 
       try {
         await navigator.clipboard.writeText(text);
-        const original = btnCopy.textContent;
-        btnCopy.textContent = "Copiado ✓";
-        btnCopy.classList.add("bg-emerald-700");
+        const original = btn.textContent;
+        btn.textContent = "Copiado ✓";
+        btn.classList.add("bg-emerald-700");
         setTimeout(() => {
-          btnCopy.textContent = original;
-          btnCopy.classList.remove("bg-emerald-700");
+          btn.textContent = original;
+          btn.classList.remove("bg-emerald-700");
         }, 900);
       } catch {
         // fallback antigo
@@ -176,7 +187,11 @@
         document.execCommand("copy");
         document.body.removeChild(ta);
       }
-    });
+    }
+
+    // ✅ ambos botões chamam a mesma função
+    btnCopyTop.addEventListener("click", () => copiarSql(btnCopyTop));
+    btnCopyBottom.addEventListener("click", () => copiarSql(btnCopyBottom));
   }
 
   async function init() {
