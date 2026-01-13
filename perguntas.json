@@ -99,8 +99,7 @@
   {
     "numero": 21,
     "pergunta": "A Consultoria verificou que o campo Multa_Atraso está com o tamanho Varchar (2), foi solicitada a alteração do campo para Varchar(3)",
-    "query_base": "ALTER TABLE Devolucao MODIFY COLUMN Multa_Atraso VARCHAR(3);"  
-  },
+    "query_base": "ALTER TABLE Financeiro_Multa ADD COLUMN Multa_Atraso VARCHAR(3);"  },
   {
     "numero": 22,
     "pergunta": "Foi verificado que o campo Multa_Atraso está com os registros preenchidos de forma errada, foi solicitada a alteração dos registros que forem 0 para Não e 1 para SIM.",
