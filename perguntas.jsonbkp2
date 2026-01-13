@@ -17,7 +17,7 @@
   {
     "numero": 4,
     "pergunta": "O Funcionário João Paulo Assistente de RH solicitou uma pesquisa que informasse todos os empréstimos que a Recepcionista Alice Meire fez no horário das 8 hs as 9 hs.",
-    "query_base": "SELECT\n    e.ID_Emprestimo,\n    e.Data_Emprestimo,\n    e.Hora_Emprestimo\nFROM Emprestimo e\nINNER JOIN Funcionario f\n    ON f.ID_Funcionario = e.ID_Funcionario\nWHERE f.Nome_Funcionario = 'Alice Meire'\n  AND e.Hora_Emprestimo BETWEEN '08:00:00' AND '08:59:59';"
+    "query_base": "SELECT e.ID_Emprestimo, e.Data_Emprestimo, e.Hora_Emprestimo \nFROM Emprestimo e \nINNER \nJOIN Funcionario f ON f.ID_Funcionario = e.ID_Funcionario \nWHERE f.Nome_Funcionario = 'Alice Meire' AND e.Hora_Emprestimo >= '08:00:00' AND e.Hora_Emprestimo < '09:00:00';"
   },
   {
     "numero": 5,
@@ -37,7 +37,7 @@
   {
     "numero": 8,
     "pergunta": "A Gerência solicitou uma pesquisa para saber quais obras existem no acervo que são diferentes dos títulos das obras O Conde de Monte Cristo ’ e Filhos e Amantes ’",
-    "query_base": "SELECT\n    ID_Obra,\n    Titulo_Obra\nFROM Obra\nWHERE Titulo_Obra NOT IN ('O Conde de Monte Cristo', 'Filhos e Amantes');"
+    "query_base": "SELECT o.ID_Obra, o.Titulo_Obra \nFROM Obra o \nWHERE o.Titulo_Obra NOT IN ('O Conde de Monte Cristo', 'Filhos e Amantes');"
   },
   {
     "numero": 9,
@@ -57,7 +57,7 @@
   {
     "numero": 12,
     "pergunta": "A área de RH precisa identificar a quantidade total dos empréstimos feitos por cada funcionário ativo",
-    "query_base": "SELECT\n    f.ID_Funcionario,\n    f.Nome_Funcionario,\n    COUNT(e.ID_Emprestimo) AS Total_Emprestimos\nFROM Funcionario f\nLEFT JOIN Emprestimo e\n    ON e.ID_Funcionario = f.ID_Funcionario\nWHERE f.Data_Demissao IS NULL\nGROUP BY f.ID_Funcionario, f.Nome_Funcionario\nORDER BY Total_Emprestimos DESC;"
+    "query_base": "SELECT f.ID_Funcionario, f.Nome_Funcionario, COUNT(e.ID_Emprestimo) AS Total_Emprestimos \nFROM Funcionario f \nLEFT \nJOIN Emprestimo e ON e.ID_Funcionario = f.ID_Funcionario \nWHERE f.Data_Demissao IS NULL \nGROUP BY f.ID_Funcionario, f.Nome_Funcionario \nORDER BY Total_Emprestimos DESC, f.Nome_Funcionario;"
   },
   {
     "numero": 13,
@@ -77,7 +77,7 @@
   {
     "numero": 16,
     "pergunta": "A Biblioteca recebeu a visita de um grupo de alunos, mas após a visita foi verificado desaparecimento de três livros, as obras que sumiram do acervo foram ‘Filho Nativo ’, ‘Vidas Secas’ e ‘Dom Casmurro’, com isto será necessária a alteração da quantidade de livros no estoque de cada obra.",
-    "query_base": "UPDATE ESTOQUE ETQ \ninner join Obra OB ON OB.ID_OBRA = ETQ.ID_OBRA \nSET QUANTIDADE_LIVRO = QUANTIDADE_LIVRO -1, \nQTD_DISPONIVEL = CASE WHEN QTD_DISPONIVEL > 0 THEN QTD_DISPONIVEL -1 ELSE 0 \nEND \nWHERE OB.TITULO_OBRA IN ('Filho Nativo','Vidas Secas','Dom Casmurro') \nAND QUANTIDADE_LIVRO > 0;"
+    "query_base": "UPDATE Estoque es \nJOIN Obra o ON o.ID_Obra = es.ID_Obra \nSET es.Quantidade_Livro = es.Quantidade_Livro - 1, es.Qtd_Disponivel = GREATEST(es.Qtd_Disponivel - 1, 0) \nWHERE o.Titulo_Obra IN ('Filho Nativo', 'Vidas Secas', 'Dom Casmurro') AND es.Quantidade_Livro > 0;"
   },
   {
     "numero": 17,
@@ -92,7 +92,7 @@
   {
     "numero": 19,
     "pergunta": "A Recepção recebeu a informação que existem dois usuários duplicados na base, será necessária a exclusão de um desses registros.",
-    "query_base": "INSERT INTO Usuario (ID_Endereco, Nome_Usuario, Telefone, CPF)\nSELECT ID_Endereco, Nome_Usuario, Telefone, CPF\nFROM Usuario\nWHERE ID_Usuario = 6;\n\n#verificando se existe nome duplicado\nSELECT Nome_Usuario, COUNT(*) AS QTD\nFROM usuario\nGROUP BY Nome_Usuario\nHAVING COUNT(*) > 1;\n\nDELETE U1.*\nFROM USUARIO U1, USUARIO U2\nWHERE U1.CPF = U2.CPF\nAND U1.id_usuario > U2.id_usuario;"
+    "query_base": "/* ATENÇÃO: primeiro identifique o duplicado pela Query 18.\\n Depois escolha o ID_Usuario que será removido. */ \nDELETE \nFROM Usuario \nWHERE ID_Usuario = <ID_USUARIO_PARA_EXCLUIR>; /* Se houver empréstimos/reservas atrelados e o MySQL bloquear, você precisa tratar antes:\\n - ou apagar filhos (Emprestimo/Reserva)\\n - ou atualizar FK\\n - ou usar ON \nDELETE CASCADE no modelo */"
   },
   {
     "numero": 20,
@@ -107,12 +107,12 @@
   {
     "numero": 22,
     "pergunta": "Foi verificado que o campo Multa_Atraso está com os registros preenchidos de forma errada, foi solicitada a alteração dos registros que forem 0 para Não e 1 para SIM.",
-    "query_base": "select * from devolucao;\n\nalter table devolucao\nmodify column Multa_atraso varchar(5);\n\nupdate devolucao\nset multa_atraso = case \nwhen multa_atraso = 0 then 'Não' \nwhen multa_atraso = 1 then 'Sim' \nelse Multa_atraso \nend;"
+    "query_base": "UPDATE Devolucao \nSET Multa_Atraso = CASE WHEN Multa_Atraso = 0 THEN 'Não' WHEN Multa_Atraso = 1 THEN 'Sim' ELSE Multa_Atraso END;"
   },
   {
     "numero": 23,
     "pergunta": "A Diretoria solicitou a exclusão do campo Valor_Livro da tabela Obra pois, o pedido feito pelo Financeiro estava errado.",
-    "query_base": "ALTER TABLE Obra\nDROP COLUMN Valor_Livro;"
+    "query_base": "ALTER TABLE Obra DROP COLUMN Valor_Livro;"
   },
   {
     "numero": 24,
@@ -127,7 +127,7 @@
   {
     "numero": 26,
     "pergunta": "A área de RH solicitou a lista de todos usuários que fizeram empréstimo com o dia de entrega igual 21/08/2011",
-    "query_base": "SELECT DISTINCT\n    u.ID_Usuario,\n    u.Nome_Usuario,\n    u.CPF,\n    e.Data_Entrega\nFROM Emprestimo e\nINNER JOIN Usuario u\n    ON u.ID_Usuario = e.ID_Usuario\nWHERE e.Data_Entrega = '2011-08-21';"
+    "query_base": "SELECT DISTINCT u.ID_Usuario, u.Nome_Usuario, u.CPF, e.Data_Entrega \nFROM Emprestimo e \nJOIN Usuario u ON u.ID_Usuario = e.ID_Usuario \nWHERE e.Data_Entrega = '2011-08-21' \nORDER BY u.Nome_Usuario;"
   },
   {
     "numero": 27,
@@ -137,7 +137,8 @@
   {
     "numero": 28,
     "pergunta": "A área de RH solicitou a lista de todos os funcionários separados por ativos ou não, seus respectivos cargos e salários.",
-    "query_base": "select fc.Nome_Funcionario ,cg.Nome_cargo,cg.Salario, \ncase when data_demissao = '9999-01-01' then 'Ativo'\nelse 'Demitido'\nend Situacao \nfrom funcionario fc, cargo cg\nwhere fc.id_cargo = cg.id_Cargo;"  },
+    "query_base": "SELECT fc.Nome_Funcionario, cg.Nome_Cargo, cg.Salario, CASE WHEN Data_Demissao = '9999-01-01' THEN 'Ativo' ELSE 'Demitido' END Situacao \nFROM Funcionario fc, Cargo cg \nWHERE fc.ID_Cargo = cg.ID_Cargo;"
+  },
   {
     "numero": 29,
     "pergunta": "A Gerência solicitou uma lista de todos os livros com os nomes dos autores, nomes das editoras e a quantidade de livros em estoque.",
@@ -146,7 +147,7 @@
   {
     "numero": 30,
     "pergunta": "A Diretoria solicitou a lista de todos os funcionários da Biblioteca com seus respectivos departamentos que tem idade entre 30 e 40 anos.",
-    "query_base": "SELECT\n    f.ID_Funcionario,\n    f.Nome_Funcionario,\n    d.Nome_Departamento,\n    TIMESTAMPDIFF(YEAR, f.Data_Admissao, CURDATE()) AS Tempo_Empresa_Aproximado\nFROM Funcionario f\nINNER JOIN Departamento d\n    ON d.ID_Departamento = f.ID_Departamento\nWHERE TIMESTAMPDIFF(YEAR, f.Data_Admissao, CURDATE()) BETWEEN 30 AND 40;"
+    "query_base": "/* Requer um campo como Funcionario.Data_Nascimento (DATE). Se não existir, você precisa alinhar com o time/avaliador qual campo usar para idade. */ \nSELECT f.ID_Funcionario, f.Nome_Funcionario, d.Nome_Departamento, TIMESTAMPDIFF(YEAR, f.Data_Nascimento, CURDATE()) AS Idade \nFROM Funcionario f \nJOIN Departamento d ON d.ID_Departamento = f.ID_Departamento \nWHERE TIMESTAMPDIFF(YEAR, f.Data_Nascimento, CURDATE()) BETWEEN 30 AND 40 \nORDER BY Idade, f.Nome_Funcionario;"
   },
   {
     "numero": 31,
@@ -166,7 +167,8 @@
   {
     "numero": 34,
     "pergunta": "O Financeiro solicitou uma atualização da data de demissão da funcionária Alice Meire para o último dia do Mês que você se encontra atualmente.",
-    "query_base": "select * from funcionario where UPPER(Nome_Funcionario) = 'ALICE MEIRE';\n\nUPDATE FUNCIONARIO SET DATA_DEMISSAO =  LAST_DAY(CURDATE())\nWHERE ID_FUNCIONARIO =8 \nAND ID_CARGO = 12;"  },
+    "query_base": "UPDATE Funcionario \nSET Data_Demissao = LAST_DAY(CURDATE()) \nWHERE ID_Funcionario = 8 AND ID_Cargo = 12;"
+  },
   {
     "numero": 35,
     "pergunta": "A Gerência solicitou uma lista de todas as Obras, que contenham a letra “C” ordenadas por gênero e que tenham data de publicação entre 2011 e 2013.",
@@ -185,13 +187,13 @@
   {
     "numero": 38,
     "pergunta": "A Diretoria solicitou uma lista que exiba a quantidade de endereços agrupados por usuário.",
-    "query_base": "SELECT\n    u.ID_Usuario,\n    u.Nome_Usuario,\n    COUNT(u.ID_Endereco) AS Qtd_Enderecos\nFROM Usuario u\nGROUP BY u.ID_Usuario, u.Nome_Usuario;"
+    "query_base": "/* Se o seu modelo permite 1 endereço por usuário, o resultado tende a ser 1. Ainda assim, a consulta agrupa e conta endereços por usuário. */ \nSELECT u.ID_Usuario, u.Nome_Usuario, COUNT(u.ID_Endereco) AS Qtd_Enderecos \nFROM Usuario u \nGROUP BY u.ID_Usuario, u.Nome_Usuario \nORDER BY Qtd_Enderecos DESC, u.Nome_Usuario;"
   },
   {
     "numero": 39,
     "pergunta": "Foi solicitado a busca de informações de todas as obras que foram reservadas no dia 18/08/11 as 15:00 e o nome do responsável pela reserva.",
-    "query_base": "SELECT rv.Id_reserva,rv.Data_reserva, rv.Hora_reserva,fcr.Nome_Funcionario,obr.Titulo_obra\nFROM reserva rv, funcionario fcr, obra obr\nwhere rv.ID_Funcionario = fcr.ID_Funcionario\nand obr.ID_obra = rv.id_obra\nand rv.status_livro = 'Reservado'\nand rv.data_reserva = '2011-08-18'\nand rv.hora_reserva = '15:00:00';"
- },
+    "query_base": "SELECT rv.ID_Reserva, rv.Data_Reserva, rv.Hora_Reserva, fcr.Nome_Funcionario, obr.Titulo_Obra \nFROM Reserva rv, Funcionario fcr, Obra obr \nWHERE rv.ID_Funcionario = fcr.ID_Funcionario AND obr.ID_Obra = rv.ID_Obra AND rv.Status_Livro = 'Reservado' AND rv.Data_Reserva = '2011-08-18' AND rv.Hora_Reserva = '15:00:00';"
+  },
   {
     "numero": 40,
     "pergunta": "O financeiro solicitou o levantamento da informação de quando as usuárias Emily Mall e Whitney Cinse pegaram livros emprestados, quais foram os livros e seus respectivos valores unitários.",
@@ -215,7 +217,7 @@
   {
     "numero": 44,
     "pergunta": "Foi solicitado a informação de todos os usuários que morem em uma avenida, e ainda, que seja mostrado o nome do usuário, CPF e logradouro em ordem de CPF do maior para o menor.",
-    "query_base": "SELECT\n    u.Nome_Usuario,\n    u.CPF,\n    e.Logradouro\nFROM Usuario u\nINNER JOIN Endereco e\n    ON e.ID_Endereco = u.ID_Endereco\nWHERE e.Logradouro LIKE 'Avenida%'\nORDER BY u.CPF DESC;"
+    "query_base": "SELECT u.Nome_Usuario, u.CPF, en.Logradouro \nFROM Usuario u \nJOIN Endereco en ON en.ID_Endereco = u.ID_Endereco \nWHERE en.Logradouro LIKE 'Avenida%' OR en.Logradouro LIKE '%Avenida%' \nORDER BY u.CPF DESC;"
   },
   {
     "numero": 45,
@@ -225,7 +227,7 @@
   {
     "numero": 46,
     "pergunta": "O Financeiro pediu para apresentar o valor médio dos livros e informar quais são os que estão abaixo dessa media, referente a devolução e empréstimo.",
-    "query_base": "WITH livros_mov AS (\n  SELECT DISTINCT es.ID_Obra, es.Valor_Unitario\n  FROM Emprestimo e\n  JOIN Estoque es\n    ON es.ID_Estoque = e.ID_Estoque\n  UNION\n  SELECT DISTINCT es.ID_Obra, es.Valor_Unitario\n  FROM Devolucao d\n  JOIN Emprestimo e\n    ON e.ID_Emprestimo = d.ID_Emprestimo\n  JOIN Estoque es\n    ON es.ID_Estoque = e.ID_Estoque\n), media AS (\n  SELECT AVG(Valor_Unitario) AS Valor_Medio\n  FROM livros_mov\n)\nSELECT\n  o.Titulo_Obra,\n  lm.Valor_Unitario,\n  m.Valor_Medio\nFROM livros_mov lm\nJOIN Obra o\n  ON o.ID_Obra = lm.ID_Obra\nCROSS JOIN media m\nWHERE lm.Valor_Unitario < m.Valor_Medio\nORDER BY lm.Valor_Unitario ASC, o.Titulo_Obra;"  
+    "query_base": "WITH livros_mov AS (\nSELECT DISTINCT es.ID_Obra, es.Valor_Unitario \nFROM Emprestimo e \nJOIN Estoque es ON es.ID_Estoque = e.ID_Estoque \nUNION \nSELECT DISTINCT es.ID_Obra, es.Valor_Unitario \nFROM Devolucao d \nJOIN Emprestimo e ON e.ID_Emprestimo = d.ID_Emprestimo \nJOIN Estoque es ON es.ID_Estoque = e.ID_Estoque), media AS (\nSELECT AVG(Valor_Unitario) AS Valor_Medio \nFROM livros_mov) \nSELECT o.Titulo_Obra, lm.Valor_Unitario, m.Valor_Medio \nFROM livros_mov lm \nJOIN Obra o ON o.ID_Obra = lm.ID_Obra CROSS \nJOIN media m \nWHERE lm.Valor_Unitario < m.Valor_Medio \nORDER BY lm.Valor_Unitario ASC, o.Titulo_Obra;"
   },
   {
     "numero": 47,
@@ -235,7 +237,7 @@
   {
     "numero": 48,
     "pergunta": "Carlos pediu que seja feita uma pesquisa informando de todos os usuários que tem cadastro na biblioteca e que nunca levaram livros mostrar o nome de todos em Maiúsculas.",
-    "query_base": "SELECT\n    UPPER(u.Nome_Usuario) AS Nome_Usuario\nFROM Usuario u\nLEFT JOIN Emprestimo e\n    ON e.ID_Usuario = u.ID_Usuario\nWHERE e.ID_Emprestimo IS NULL;"
+    "query_base": "SELECT UPPER(u.Nome_Usuario) AS Nome_Usuario \nFROM Usuario u \nLEFT \nJOIN Emprestimo e ON e.ID_Usuario = u.ID_Usuario \nWHERE e.ID_Emprestimo IS NULL \nORDER BY Nome_Usuario;"
   },
   {
     "numero": 49,
@@ -260,17 +262,17 @@
   {
     "numero": 53,
     "pergunta": "Crie uma tabela que exiba uma lista de todos livros por funcionario, o total de empréstimos e devoluções que cada um atendeu.",
-  "query_base": "DROP TABLE IF EXISTS Relatorio_Funcionario_Livros;\nCREATE TABLE Relatorio_Funcionario_Livros AS\nSELECT\n  f.ID_Funcionario,\n  f.Nome_Funcionario,\n  COUNT(DISTINCT e.ID_Emprestimo) AS Total_Emprestimos,\n  COUNT(DISTINCT d.ID_Devolucao) AS Total_Devolucoes,\n  GROUP_CONCAT(DISTINCT o.Titulo_Obra ORDER BY o.Titulo_Obra SEPARATOR ', ') AS Livros_Atendidos\nFROM Funcionario f\nINNER JOIN Emprestimo e ### trazendo somente funcionario que tem atendimentos feitos... colocar left join pra aparecer todos\n  ON e.ID_Funcionario = f.ID_Funcionario\nLEFT JOIN Devolucao d\n  ON d.ID_Emprestimo = e.ID_Emprestimo\nLEFT JOIN Estoque es\n  ON es.ID_Estoque = e.ID_Estoque\nLEFT JOIN Obra o\n  ON o.ID_Obra = es.ID_Obra\nGROUP BY f.ID_Funcionario, f.Nome_Funcionario;\n\nSELECT * FROM Relatorio_Funcionario_Livros;"
+    "query_base": "DROP TABLE IF EXISTS Relatorio_Funcionario_Livros; \nCREATE TABLE Relatorio_Funcionario_Livros AS \nSELECT f.ID_Funcionario, f.Nome_Funcionario, COUNT(DISTINCT e.ID_Emprestimo) AS Total_Emprestimos, COUNT(DISTINCT d.ID_Devolucao) AS Total_Devolucoes, GROUP_CONCAT(DISTINCT o.Titulo_Obra \nORDER BY o.Titulo_Obra SEPARATOR ', ') AS Livros_Atendidos \nFROM Funcionario f \nINNER \nJOIN Emprestimo e ON e.ID_Funcionario = f.ID_Funcionario \nLEFT \nJOIN Devolucao d ON d.ID_Emprestimo = e.ID_Emprestimo \nLEFT \nJOIN Estoque es ON es.ID_Estoque = e.ID_Estoque \nLEFT \nJOIN Obra o ON o.ID_Obra = es.ID_Obra \nGROUP BY f.ID_Funcionario, f.Nome_Funcionario;"
   },
   {
     "numero": 54,
     "pergunta": "A biblioteca quer fechar parceria com as editoras, e existem usuários que trabalham nas editoras facilitando esse contato, para tanto, verificar quais usuários possuem o mesmo endereço das editoras, informe seu nome, telefone e o nome da editora que trabalha.",
-    "query_base": "SELECT\n    u.Nome_Usuario,\n    u.Telefone,\n    ed.Nome_Editora\nFROM Usuario u\nINNER JOIN Editora ed\n    ON ed.ID_Endereco = u.ID_Endereco;"
+    "query_base": "/* Match por ID_Endereco (se Editora também aponta para Endereco) */ \nSELECT u.Nome_Usuario, u.Telefone, ed.Nome_Editora \nFROM Usuario u \nJOIN Endereco en_u ON en_u.ID_Endereco = u.ID_Endereco \nJOIN Editora ed ON ed.ID_Endereco = en_u.ID_Endereco \nORDER BY ed.Nome_Editora, u.Nome_Usuario; /* Se no seu modelo Editora NÃO tiver ID_Endereco, você pode dar match por campos: CEP + Logradouro + Numero (e Bairro se existir). */"
   },
   {
     "numero": 55,
     "pergunta": "Foi solicitado a criação de uma visão que traga todos os livros e o preço da editora Leya.",
-    "query_base": "CREATE OR REPLACE VIEW vw_livros_preco_leya AS\nSELECT\n    o.Titulo_Obra AS Livro,\n    es.Valor_Unitario AS Preco\nFROM Obra o\nINNER JOIN Editora ed\n    ON ed.ID_Editora = o.ID_Editora\nINNER JOIN Estoque es\n    ON es.ID_Obra = o.ID_Obra\nWHERE ed.Nome_Editora = 'Leya';"
+    "query_base": "CREATE OR REPLACE VIEW vw_livros_preco_leya AS \nSELECT o.Titulo_Obra AS Livro, es.Valor_Unitario AS Preco \nFROM Obra o \nJOIN Editora ed ON ed.ID_Editora = o.ID_Editora \nJOIN Estoque es ON es.ID_Obra = o.ID_Obra \nWHERE ed.Nome_Editora = 'Leya' \nORDER BY o.Titulo_Obra;"
   },
   {
     "numero": 56,
@@ -280,7 +282,7 @@
   {
     "numero": 57,
     "pergunta": "Foi solicitado apresentarmos quais as 5 obras que tiveram menos publicações e as 5 de maior, ainda, mostrar qual o autor, editora, nome do livro e quantidade de publicações em ordem decrescente.",
-    "query_base": "SELECT P.* FROM (\n(SELECT AT.NOME_AUTOR, OB.TITULO_OBRA AS NOME_LIVRO, ED.NOME_EDITORA, OB.NUMERO_PUBLICACAO, 'MAIOR' AS TIPO\nFROM OBRA ob\nINNER JOIN AUTOR AT ON AT.ID_AUTOR = OB.ID_AUTOR\nINNER JOIN EDITORA ED ON ED.ID_EDITORA = OB.ID_EDITORA\nORDER BY OB.NUMERO_PUBLICACAO DESC\nLIMIT 5)\nUNION ALL\n(SELECT AT.NOME_AUTOR, OB.TITULO_OBRA AS NOME_LIVRO, ED.NOME_EDITORA, OB.NUMERO_PUBLICACAO, 'MENOR' AS TIPO\nFROM OBRA OB \nINNER JOIN AUTOR AT ON AT.ID_AUTOR = OB.ID_AUTOR\nINNER JOIN EDITORA ED ON ED.ID_EDITORA = OB.ID_EDITORA\nORDER BY OB.NUMERO_PUBLICACAO ASC\nLIMIT 5)\n) P\nORDER BY P.NUMERO_PUBLICACAO DESC;"
+    "query_base": "SELECT P.* \nFROM ((\nSELECT AT.Nome_Autor, OB.Titulo_Obra AS Nome_Livro, ED.Nome_Editora, OB.Numero_Publicacao, 'MAIOR' AS Tipo \nFROM Obra OB \nINNER \nJOIN Autor AT ON AT.ID_Autor = OB.ID_Autor \nINNER \nJOIN Editora ED ON ED.ID_Editora = OB.ID_Editora \nORDER BY OB.Numero_Publicacao DESC \nLIMIT 5) \n\nUNION ALL (\nSELECT AT.Nome_Autor, OB.Titulo_Obra AS Nome_Livro, ED.Nome_Editora, OB.Numero_Publicacao, 'MENOR' AS Tipo \nFROM Obra OB \nINNER \nJOIN Autor AT ON AT.ID_Autor = OB.ID_Autor \nINNER \nJOIN Editora ED ON ED.ID_Editora = OB.ID_Editora \nORDER BY OB.Numero_Publicacao ASC \nLIMIT 5)) P \nORDER BY P.Numero_Publicacao DESC;"
   },
   {
     "numero": 58,
