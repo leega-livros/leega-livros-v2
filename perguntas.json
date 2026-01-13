@@ -104,7 +104,7 @@
   {
     "numero": 22,
     "pergunta": "Foi verificado que o campo Multa_Atraso está com os registros preenchidos de forma errada, foi solicitada a alteração dos registros que forem 0 para Não e 1 para SIM.",
-    "query_base": "select * from devolucao;\n\nalter table devolucao\nmodify column Multa_atraso varchar(5);\n\nupdate devolucao\nset multa_atraso = case \nwhen multa_atraso = 0 then 'Não' \nwhen multa_atraso = 1 then 'Sim' \nelse Multa_atraso \nend;"
+    "query_base": "alter table Financeiro_multa\nadd column Multa_atraso varchar(3);\n\nUPDATE Financeiro_Multa\nSET Multa_Atraso = case when status_multa = 'Pendente' then 0 \nwhen status_multa = 'Paga' then 1 else \nmulta_atraso \nend\nWHERE Status_Multa in('Pendente','Paga');\n\n#Questão 22\nupdate Financeiro_Multa\nset multa_atraso = case \nwhen multa_atraso = 0 then 'Não' \nwhen multa_atraso = 1 then 'Sim' \nelse Multa_atraso \nend;\n\nselect * from Financeiro_multa;\n\nALTER TABLE Financeiro_Multa\nDROP COLUMN Multa_Atraso;"
   },
   {
     "numero": 23,
