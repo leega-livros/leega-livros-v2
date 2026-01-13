@@ -2,7 +2,7 @@
   {
     "numero": 1,
     "pergunta": "A Diretora Camilla Prado solicitou uma pesquisa que informe todas as obras cadastradas no acervo ordenadas por data de publicação.",
-    "query_base": "SELECT o.ID_Obra, o.Titulo_Obra, o.Data_Publicacao \nFROM Obra o \nORDER BY o.Data_Publicacao;"
+    "query_base": "SELECT ID_Obra, Titulo_Obra, Numero_Publicacao, Genero, Data_Publicacao, a.Nome_Autor, e.Nome_Editora FROM obra AS o\n\tINNER JOIN autor AS a ON a.ID_Autor = o.ID_Autor\n\t\tINNER JOIN editora AS e ON e.ID_Editora = o.ID_Editora ORDER BY Data_Publicacao;"  
   },
   {
     "numero": 2,
@@ -27,7 +27,7 @@
   {
     "numero": 6,
     "pergunta": "A Gerência solicitou uma pesquisa para saber quais reservas de livros que foram feitas com data maior ou igual a 18/08/2011 que ainda possuem o status de reservado",
-    "query_base": "SELECT r.* \nFROM Reserva r \nWHERE r.Data_Reserva >= '2011-08-18' AND r.Status_Reserva = 'Reservado';"
+    "query_base": "SELECT * FROM reserva \n\tWHERE Data_Reserva >= '2011-08-18' AND Status_Livro = 'Reservado';"
   },
   {
     "numero": 7,
@@ -47,7 +47,7 @@
   {
     "numero": 10,
     "pergunta": "A Diretoria solicitou uma pesquisa para identificar qual o livro possuiu a maior quantidade em estoque, incluir respectiva editora e o respectivo autor.",
-    "query_base": "SELECT o.Titulo_Obra, a.Nome_Autor, ed.Nome_Editora, es.Quantidade \nFROM Estoque es \nINNER \nJOIN Obra o ON o.ID_Obra = es.ID_Obra \nINNER \nJOIN Autor a ON a.ID_Autor = o.ID_Autor \nINNER \nJOIN Editora ed ON ed.ID_Editora = o.ID_Editora \nORDER BY es.Quantidade DESC \nLIMIT 1;"
+    "query_base": "SELECT ID_Estoque, o.Titulo_Obra, ed.Nome_Editora, a.Nome_Autor, Quantidade_Livro FROM estoque AS es\n\tINNER JOIN obra AS o ON o.ID_Obra = es.ID_Obra\n\t\tINNER JOIN autor AS a ON a.ID_Autor = o.ID_Autor\n\t\t\tINNER JOIN editora AS ed ON ed.ID_Editora = o.ID_Editora ORDER BY Quantidade_Livro DESC LIMIT 1;"
   },
   {
     "numero": 11,
@@ -66,7 +66,7 @@
   {
     "numero": 14,
     "pergunta": "A Funcionária Alice Meire solicitou a alteração da obra Discurso do Método ’ para o gênero Político.",
-    "query_base": "/* Cenário A: Obra possui coluna de texto 'Genero' */ \nUPDATE Obra \nSET Genero = 'Político' \nWHERE Titulo_Obra = 'Discurso do Método'; /* Cenário B (se houver tabela Genero e FK Obra.ID_Genero): \nUPDATE Obra o \nJOIN Genero g ON g.Nome_Genero = 'Político' \nSET o.ID_Genero = g.ID_Genero \nWHERE o.Titulo_Obra = 'Discurso do Método'; */"
+    "query_base": "UPDATE obra SET Genero = 'Política' WHERE Titulo_Obra = 'Discurso do Método';\n\nSELECT * FROM obra WHERE Titulo_Obra = 'Discurso do Método';"
   },
   {
     "numero": 15,
@@ -81,7 +81,7 @@
   {
     "numero": 17,
     "pergunta": "A Recepcionista Claudia Cristina não conseguiu terminar o cadastro de cinco usuários que passaram pela Biblioteca, foi solicitado a inserção desses usuários. São eles: • 31 , Alfredo Tenttoni , Rua Amazonas 58 , Pirai, 6549 5421 , 02170 251 , 294.264.875 32 • 32 , Cindy Crall , Rua Ipiranga 123 , Vila Cristal, 5846 6577 , 02182 637 , 122.147.655 49 • 33 , Rubens Pardo, Avenida dos Monges 51 , Campo Grande, 5184 8978 , 52412 365 , 654.586.472 98 • 34 , Carlos Pracidelli , Travessa dos Irmãos 48 , Cotia, 8945 7986 , 23124 005 , 341.251.651 75 • 35 , Ernesto Coimbra, Avenida Ampére 414 , Jardim Elvira, 5844 2654 , 05728 368 , 193.107.214 35",
-    "query_base": "/* Inserção em 2 etapas: Endereco -> Usuario (assumindo Usuario.ID_Endereco FK).\\n Ajuste campos Cidade/Estado se o seu modelo exigir (a lista não fornece). */ -- 1) Alfredo Tenttoni \nINSERT INTO Endereco (CEP, Logradouro, Bairro, Cidade, Estado, Numero) \nVALUES ('02170251', 'Rua Amazonas', 'Pirai', NULL, NULL, 58); \nINSERT INTO Usuario (ID_Usuario, ID_Endereco, Nome_Usuario, Telefone, CPF) \nVALUES (31, LAST_INSERT_ID(), 'Alfredo Tenttoni', '65495421', '294.264.875-32'); -- 2) Cindy Crall \nINSERT INTO Endereco (CEP, Logradouro, Bairro, Cidade, Estado, Numero) \nVALUES ('02182637', 'Rua Ipiranga', 'Vila Cristal', NULL, NULL, 123); \nINSERT INTO Usuario (ID_Usuario, ID_Endereco, Nome_Usuario, Telefone, CPF) \nVALUES (32, LAST_INSERT_ID(), 'Cindy Crall', '58466577', '122.147.655-49'); -- 3) Rubens Pardo \nINSERT INTO Endereco (CEP, Logradouro, Bairro, Cidade, Estado, Numero) \nVALUES ('52412365', 'Avenida dos Monges', 'Campo Grande', NULL, NULL, 51); \nINSERT INTO Usuario (ID_Usuario, ID_Endereco, Nome_Usuario, Telefone, CPF) \nVALUES (33, LAST_INSERT_ID(), 'Rubens Pardo', '51848978', '654.586.472-98'); -- 4) Carlos Pracidelli \nINSERT INTO Endereco (CEP, Logradouro, Bairro, Cidade, Estado, Numero) \nVALUES ('23124005', 'Travessa dos Irmãos', 'Cotia', NULL, NULL, 48); \nINSERT INTO Usuario (ID_Usuario, ID_Endereco, Nome_Usuario, Telefone, CPF) \nVALUES (34, LAST_INSERT_ID(), 'Carlos Pracidelli', '89457986', '341.251.651-75'); -- 5) Ernesto Coimbra \nINSERT INTO Endereco (CEP, Logradouro, Bairro, Cidade, Estado, Numero) \nVALUES ('05728368', 'Avenida Ampére', 'Jardim Elvira', NULL, NULL, 414); \nINSERT INTO Usuario (ID_Usuario, ID_Endereco, Nome_Usuario, Telefone, CPF) \nVALUES (35, LAST_INSERT_ID(), 'Ernesto Coimbra', '58442654', '193.107.214-35');"
+    "query_base": "INSERT INTO Endereco (ID_Endereco, CEP, Logradouro, Bairro, Cidade, Estado, Numero) VALUES\n(31, '02170-251', 'Rua Amazonas', 'Pirai', 'São Paulo', 'SP', 58),\n(32, '02182-637', 'Rua Ipiranga', 'Vila Cristal', 'São Paulo', 'SP', 123),\n(33, '52412-365', 'Avenida dos Monges', 'Campo Grande', 'São Paulo', 'SP', 51),\n(34, '23124-005', 'Travessa dos Irmãos', 'Cotia', 'São Paulo', 'SP', 48),\n(35, '05728-368', 'Avenida Ampére', 'Jardim Elvira', 'São Paulo', 'SP', 414);\n\nINSERT INTO Usuario (ID_Usuario, ID_Endereco, Nome_Usuario, Telefone, CPF, Status_Usuario) VALUES\n(31, 31, 'Alfredo Tenttoni', '6549-5421', '294.264.875-32', 'Ativo'),\n(32, 32, 'Cindy Crall', '5846-6577', '122.147.655-49', 'Ativo'),\n(33, 33, 'Rubens Pardo', '5184-8978', '654.586.472-98', 'Ativo'),\n(34, 34, 'Carlos Pracidelli', '8945-7986', '341.251.651-75', 'Ativo'),\n(35, 35, 'Ernesto Coimbra', '5844-2654', '193.107.214-35', 'Ativo');"
   },
   {
     "numero": 18,
@@ -95,7 +95,7 @@
   {
     "numero": 20,
     "pergunta": "O Financeiro solicitou a inserção do valor individual de cada obra. Crie um campo com o nome ‘Valor_Livro’ na tabela Obra. Defina o tipo de dados que poderá ser aceito e o valor de cada título.",
-    "query_base": "/* 1) Criar a coluna */ \nALTER TABLE Obra ADD COLUMN Valor_Livro DECIMAL(10,2) NULL; /* 2) Preencher valores (exemplo com CASE).\\n Substitua os títulos e valores pelos do seu dataset/planilha. */ \nUPDATE Obra \nSET Valor_Livro = CASE WHEN Titulo_Obra = 'Dom Casmurro' THEN 49.90 WHEN Titulo_Obra = 'Vidas Secas' THEN 39.90 WHEN Titulo_Obra = 'Filho Nativo' THEN 29.90 ELSE Valor_Livro END;"
+    "query_base": "ALTER TABLE obra\n\tADD COLUMN Valor_Livro DECIMAL(10,2) NOT NULL DEFAULT 0.00;\n\nUPDATE obra AS o\n\tINNER JOIN e AS e\n\t\tON e.ID_Obra = o.ID_Obra\n\t\t\tSET o.Valor_Livro = e.Valor_Unitario;"
   },
   {
     "numero": 21,
@@ -115,7 +115,7 @@
   {
     "numero": 24,
     "pergunta": "A Diretoria solicitou a lista de todos os livros que já foram emprestados mas foram entregues com atraso e os respectivos os nomes dos funcionários que fizeram os empréstimos.",
-    "query_base": "SELECT o.Titulo_Obra, f.Nome_Funcionario, e.Data_Emprestimo, e.Data_Entrega, d.Data_Devolucao, DATEDIFF(d.Data_Devolucao, e.Data_Entrega) AS Dias_Atraso \nFROM Devolucao d \nJOIN Emprestimo e ON e.ID_Emprestimo = d.ID_Emprestimo \nJOIN Funcionario f ON f.ID_Funcionario = e.ID_Funcionario \nJOIN Estoque es ON es.ID_Estoque = e.ID_Estoque \nJOIN Obra o ON o.ID_Obra = es.ID_Obra \nWHERE d.Data_Devolucao > e.Data_Entrega \nORDER BY Dias_Atraso DESC, o.Titulo_Obra;"
+    "query_base": "SELECT o.ID_Obra, em.ID_Emprestimo, ID_Devolucao, o.Titulo_Obra, em.ID_Funcionario, f.Nome_Funcionario, em.Data_Emprestimo, em.Data_Entrega, Data_Devolucao FROM devolucao AS d\n\tINNER JOIN emprestimo AS em ON em.ID_Emprestimo = d.ID_Emprestimo\n\t\tINNER JOIN funcionario AS f ON f.ID_Funcionario = em.ID_Funcionario\n\t\t\tINNER JOIN estoque AS es ON es.ID_Estoque = em.ID_Estoque\n\t\t\t\tINNER JOIN obra AS o ON o.ID_Obra = es.ID_Obra\n\t\t\t\t\tWHERE Data_Entrega < Data_Devolucao;"
   },
   {
     "numero": 25,
@@ -149,7 +149,7 @@
   {
     "numero": 31,
     "pergunta": "O Financeiro solicitou a criação de uma visão que retorne o nome do livro, seu autor e o valor.",
-    "query_base": "CREATE OR REPLACE VIEW vw_livro_autor_valor AS \nSELECT o.Titulo_Obra AS Livro, a.Nome_Autor AS Autor, es.Valor_Unitario AS Valor_Unitario \nFROM Obra o \nJOIN Autor a ON a.ID_Autor = o.ID_Autor \nJOIN Estoque es ON es.ID_Obra = o.ID_Obra;"
+    "query_base": "CREATE VIEW vwLivro AS SELECT o.Titulo_Obra, a.Nome_Autor, Valor_Unitario FROM estoque AS e\n\tINNER JOIN obra AS o ON o.ID_Obra = e.ID_Obra\n\t\tINNER JOIN autor AS a ON a.ID_Autor = o.ID_Autor;\n        \nSELECT * FROM vwLivro;"
   },
   {
     "numero": 32,
@@ -168,7 +168,7 @@
   {
     "numero": 35,
     "pergunta": "A Gerência solicitou uma lista de todas as Obras, que contenham a letra “C” ordenadas por gênero e que tenham data de publicação entre 2011 e 2013.",
-    "query_base": "SELECT o.ID_Obra, o.Titulo_Obra, g.Nome_Genero AS Genero, o.Data_Publicacao \nFROM Obra o \nJOIN Genero g ON g.ID_Genero = o.ID_Genero \nWHERE o.Titulo_Obra LIKE '%C%' AND o.Data_Publicacao BETWEEN '2011-01-01' AND '2013-12-31' \nORDER BY g.Nome_Genero, o.Titulo_Obra;"
+    "query_base": "SELECT * FROM obra\n\tWHERE Titulo_Obra LIKE '%C%' \n\t\tAND Data_Publicacao >= '2011-01-01' AND Data_Publicacao <= '2013-12-31'\n\t\t\tORDER BY Genero;"
   },
   {
     "numero": 36,
@@ -198,7 +198,7 @@
   {
     "numero": 41,
     "pergunta": "Hoje é aniversario da biblioteca e para comemorar foram comprados presentes a todos os usuários que foram os primeiros a utilizar a biblioteca, o gerente Carlos mendes pediu a relação da primeira pessoa a reservar, pegar emprestado e devolver um livro e suas respectivas informações para que possa ser entrado em contato com ele.",
-    "query_base": "/* Retorna 3 linhas: primeiro a reservar, primeiro a emprestar, primeiro a devolver */ ( \nSELECT 'Primeiro a reservar' AS Evento, u.ID_Usuario, u.Nome_Usuario, u.Telefone, u.CPF, r.Data_Reserva AS Data_Evento, r.Hora_Reserva AS Hora_Evento \nFROM Reserva r \nJOIN Usuario u ON u.ID_Usuario = r.ID_Usuario \nORDER BY r.Data_Reserva, r.Hora_Reserva \nLIMIT 1 ) \n\nUNION ALL ( \nSELECT 'Primeiro a emprestar' AS Evento, u.ID_Usuario, u.Nome_Usuario, u.Telefone, u.CPF, e.Data_Emprestimo AS Data_Evento, e.Hora_Emprestimo AS Hora_Evento \nFROM Emprestimo e \nJOIN Usuario u ON u.ID_Usuario = e.ID_Usuario \nORDER BY e.Data_Emprestimo, e.Hora_Emprestimo \nLIMIT 1 ) \n\nUNION ALL ( \nSELECT 'Primeiro a devolver' AS Evento, u.ID_Usuario, u.Nome_Usuario, u.Telefone, u.CPF, d.Data_Devolucao AS Data_Evento, d.Hora_Devolucao AS Hora_Evento \nFROM Devolucao d \nJOIN Emprestimo e ON e.ID_Emprestimo = d.ID_Emprestimo \nJOIN Usuario u ON u.ID_Usuario = e.ID_Usuario \nORDER BY d.Data_Devolucao, d.Hora_Devolucao \nLIMIT 1 );"
+    "query_base": "(SELECT ID_Emprestimo, es.ID_Usuario, Data_Emprestimo, Hora_Emprestimo, u.Nome_Usuario, u.Telefone, en.CEP, en.Logradouro, en.Numero, en.Bairro, en.Cidade, en.Estado FROM emprestimo AS es\n\tINNER JOIN usuario AS u ON u.ID_Usuario = es.ID_Usuario\n\t\tINNER JOIN endereco AS en ON en.ID_Endereco = u.ID_Endereco\n\t\t\tORDER BY Data_Emprestimo ASC, Hora_Emprestimo ASC\n\t\t\t\tLIMIT 1)\nUNION ALL\n(SELECT ID_Reserva, r.ID_Usuario, Data_Reserva, Hora_Reserva, u.Nome_Usuario, u.Telefone, en.CEP, en.Logradouro, en.Numero, en.Bairro, en.Cidade, en.Estado FROM reserva AS r\n\tINNER JOIN usuario AS u ON u.ID_Usuario = r.ID_Usuario\n\t\tINNER JOIN endereco AS en ON en.ID_Endereco = u.ID_Endereco\n\t\t\tORDER BY Data_Reserva ASC, Hora_Reserva ASC\n\t\t\t\tLIMIT 1)\nUNION ALL\n(SELECT ID_Devolucao, em.ID_Usuario, Data_Devolucao, Hora_Devolucao, u.Nome_Usuario, u.Telefone, en.CEP, en.Logradouro, en.Numero, en.Bairro, en.Cidade, en.Estado FROM devolucao AS d\n\tINNER JOIN emprestimo AS em ON em.ID_Emprestimo = d.ID_Emprestimo\n        INNER JOIN usuario AS u ON u.ID_Usuario = em.ID_Usuario\n\t\tINNER JOIN endereco AS en ON en.ID_Endereco = u.ID_Endereco\n\t\t\tORDER BY Data_Devolucao ASC, Hora_Devolucao ASC\n\t\t\t\tLIMIT 1);"
   },
   {
     "numero": 42,
@@ -248,7 +248,7 @@
   {
     "numero": 51,
     "pergunta": "Foi solicitada a pesquisa de qual a hora que a biblioteca tem mais movimento e, também, qual o horário de menor movimentação, faça a avaliação de todas as horas de devolução, empréstimo e reserva.",
-    "query_base": "WITH movimentos AS ( \nSELECT HOUR(Hora_Emprestimo) AS Hora_Evento \nFROM Emprestimo \nWHERE Hora_Emprestimo IS NOT NULL \n\nUNION ALL \nSELECT HOUR(Hora_Devolucao) AS Hora_Evento \nFROM Devolucao \nWHERE Hora_Devolucao IS NOT NULL \n\nUNION ALL \nSELECT HOUR(Hora_Reserva) AS Hora_Evento \nFROM Reserva \nWHERE Hora_Reserva IS NOT NULL ), agg AS ( \nSELECT Hora_Evento, COUNT(*) AS Total \nFROM movimentos \nGROUP BY Hora_Evento ) ( \nSELECT 'Maior movimento' AS Tipo, Hora_Evento, Total \nFROM agg \nORDER BY Total DESC \nLIMIT 1 ) \n\nUNION ALL ( \nSELECT 'Menor movimento' AS Tipo, Hora_Evento, Total \nFROM agg \nORDER BY Total ASC \nLIMIT 1 );"
+    "query_base": "SELECT hora, count(*) AS movimento\n\tFROM ( SELECT HOUR(Hora_EMprestimo) AS hora FROM emprestimo\n\t\t\tUNION ALL\n            SELECT HOUR(Hora_Devolucao) AS hora FROM devolucao\n            UNION ALL\n            SELECT HOUR(Hora_Reserva) AS hora FROM reserva) total_movimento\n\t\tGROUP BY hora\n\t\t\tORDER BY movimento DESC;"
   },
   {
     "numero": 52,
@@ -283,6 +283,6 @@
   {
     "numero": 58,
     "pergunta": "Fazem cento e noventa e três meses que o instituto bibliográfico brasileiro surgiu. Para comemorar a diretoria pediu a relação de todos os usuários que tem o cpf com o começo 193 que receberão um presente de comemoração. Para isto, foi solicitado informar o nome e o cpf de todos os usuários que estejam nesse padrão mas mostrar cpf os 3 primeiros dígitos e os dois últimos os do meio apresentar um \"*\" como no exemplo: 193.***.***-35.",
-    "query_base": "/* Normaliza CPF para só dígitos e aplica máscara: 193.***.***-XX */ \nSELECT u.Nome_Usuario, CONCAT( LEFT(cpf_digits, 3), '.***.***-', RIGHT(cpf_digits, 2) ) AS CPF_Mascarado \nFROM ( \nSELECT ID_Usuario, Nome_Usuario, REPLACE(REPLACE(CPF, '.', ''), '-', '') AS cpf_digits \nFROM Usuario ) u \nWHERE u.cpf_digits LIKE '193%' \nORDER BY u.Nome_Usuario;"
+    "query_base": "SELECT Nome_Usuario, \n\tconcat(\n\t\tsubstring(CPF, 1, 3),\n        '.***.***-',\n        RIGHT(CPF, 2)\n\t) AS CPF FROM usuario \n\t\tWHERE CPF LIKE '193%'"  
   }
 ]
