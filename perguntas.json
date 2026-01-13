@@ -7,7 +7,7 @@
   {
     "numero": 2,
     "pergunta": "O Governador vai doar duzentos livros para a Biblioteca, mas só irá doar se a biblioteca tiver menos de 300 obras . O Gerente Márcio Tales solicitou que fosse feita a contagem de quantas obras a Biblioteca possui atualmente.",
-    "query_base": "SELECT COUNT(ID_Obra) AS Total_Obras \nFROM Obra;"
+    "query_base": "SELECT COUNT(ID_Obra) AS Total_Obras FROM Obra;"
   },
   {
     "numero": 3,
@@ -21,8 +21,8 @@
   },
   {
     "numero": 5,
-    "pergunta": "A Diretoria solicitou uma pesquisa sobre devolução de livros entre as datas 29 03 2012 a 02 02 2013",
-    "query_base": "SELECT * \nFROM Devolucao \nWHERE Data_Devolucao BETWEEN '2012-03-29' AND '2013-02-02';"
+    "pergunta": "A Diretoria solicitou uma pesquisa sobre devolução de livros entre as datas 29/03/2012 a 02/02/2013",
+    "query_base": "SELECT * FROM Devolucao \nWHERE Data_Devolucao BETWEEN '2012-03-29' AND '2013-02-02';"  
   },
   {
     "numero": 6,
@@ -253,7 +253,7 @@
   {
     "numero": 52,
     "pergunta": "A sociedade brasileira de editoras solicitou o levantamento para a biblioteca de qual são os 3 autores que tem mais livros lidos no ano de 2012 e 2013 e os 2 que tem menos obras lidas.",
-"query_base": "(SELECT A.Nome_Autor, COUNT(E.ID_Emprestimo) as Total \n FROM Autor A JOIN Obra O ON A.ID_Autor = O.ID_Autor \n JOIN Estoque Est ON O.ID_Obra = Est.ID_Obra \n JOIN Emprestimo E ON Est.ID_Estoque = E.ID_Estoque\n WHERE YEAR(E.Data_Emprestimo) BETWEEN 2012 AND 2013\n GROUP BY A.Nome_Autor ORDER BY Total DESC LIMIT 3)\nUNION\n(SELECT A.Nome_Autor, COUNT(E.ID_Emprestimo) as Total \n FROM Autor A JOIN Obra O ON A.ID_Autor = O.ID_Autor \n JOIN Estoque Est ON O.ID_Obra = Est.ID_Obra \n JOIN Emprestimo E ON Est.ID_Estoque = E.ID_Estoque\n WHERE YEAR(E.Data_Emprestimo) BETWEEN 2012 AND 2013\n GROUP BY A.Nome_Autor ORDER BY Total ASC LIMIT 2);"
+    "query_base": "(SELECT A.Nome_Autor, COUNT(E.ID_Emprestimo) as Total \n FROM Autor A JOIN Obra O ON A.ID_Autor = O.ID_Autor \n JOIN Estoque Est ON O.ID_Obra = Est.ID_Obra \n JOIN Emprestimo E ON Est.ID_Estoque = E.ID_Estoque\n WHERE YEAR(E.Data_Emprestimo) BETWEEN 2012 AND 2013\n GROUP BY A.Nome_Autor ORDER BY Total DESC LIMIT 3)\nUNION\n(SELECT A.Nome_Autor, COUNT(E.ID_Emprestimo) as Total \n FROM Autor A JOIN Obra O ON A.ID_Autor = O.ID_Autor \n JOIN Estoque Est ON O.ID_Obra = Est.ID_Obra \n JOIN Emprestimo E ON Est.ID_Estoque = E.ID_Estoque\n WHERE YEAR(E.Data_Emprestimo) BETWEEN 2012 AND 2013\n GROUP BY A.Nome_Autor ORDER BY Total ASC LIMIT 2);"
   },
   {
     "numero": 53,
