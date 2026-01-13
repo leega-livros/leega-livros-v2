@@ -30,6 +30,7 @@
 
 <body class="bg-slate-50 text-slate-900 min-h-screen">
   <div class="max-w-5xl mx-auto p-6">
+    <!-- Topo -->
     <div class="flex items-center justify-between gap-4 mb-6">
       <div>
         <h1 class="text-2xl font-bold">Criar Banco & Tabelas</h1>
@@ -42,9 +43,19 @@
       </a>
     </div>
 
+    <!-- Conteúdo SQL -->
     <div id="sqlContainer"></div>
+
+    <!-- Botão inferior -->
+    <div class="mt-10 flex justify-center">
+      <a href="index.html"
+         class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800">
+        ← Voltar para perguntas
+      </a>
+    </div>
   </div>
 
+  <!-- Configuração da página -->
   <script>
     window.SQL_PAGE = {
       title: "Criar Banco & Tabelas",
@@ -54,6 +65,7 @@
     };
   </script>
 
+  <!-- Renderer -->
   <script src="sql-page.js"></script>
 </body>
 </html>
