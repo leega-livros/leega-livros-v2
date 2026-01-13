@@ -254,7 +254,7 @@
   {
     "numero": 43,
     "pergunta": "É fechamento referente ao mês de janeiro (hoje dia 03/02/2013) e a biblioteca está no vermelho, foi solicitado pelo financeiro que fosse feito um levantamento de todos os livros que não foram devolvidos, mostrando quantos dias de atraso e para cada dia foi dado uma multa de 5 reais, e mostrar o nome do usuário, livro emprestado e o total a receber pela biblioteca.",
-    "query_base": "SELECT U.Nome_Usuario, O.Titulo_Obra, M.Dias_Atraso, M.Valor_Total\nFROM Financeiro_Multa M\nJOIN Emprestimo E ON M.ID_Emprestimo = E.ID_Emprestimo\nJOIN Usuario U ON E.ID_Usuario = U.ID_Usuario\nJOIN Estoque Est ON E.ID_Estoque = Est.ID_Estoque\nJOIN Obra O ON Est.ID_Obra = O.ID_Obra\nWHERE M.Status_Multa = 'Pendente';",
+    "query_base": "SELECT U.Nome_Usuario, O.Titulo_Obra, M.Dias_Atraso, M.Valor_Total AS Total_Receber\nFROM Financeiro_Multa M\nJOIN Devolucao D ON M.ID_Devolucao = D.ID_Devolucao\nJOIN Emprestimo E ON D.ID_Emprestimo = E.ID_Emprestimo\nJOIN Usuario U ON E.ID_Usuario = U.ID_Usuario\nJOIN Estoque Est ON E.ID_Estoque = Est.ID_Estoque\nJOIN Obra O ON Est.ID_Obra = O.ID_Obra\nWHERE M.Status_Multa = 'Pendente';",
     "tipos": ["SELECT"]
   },
   {
