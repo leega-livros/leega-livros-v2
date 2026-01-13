@@ -175,21 +175,26 @@ INSERT INTO Devolucao (ID_Devolucao, ID_Funcionario, ID_Emprestimo, Data_Devoluc
 (19, 11, 24, '2012-12-30', '16:00:00'), (20, 11, 27, '2013-02-02', '18:00:00');
 
 -- RESERVA
-INSERT INTO Reserva (ID_Reserva, ID_Emprestimo, ID_Funcionario, ID_Usuario, ID_Obra, ID_Estoque, Status_Livro, Data_Reserva, Hora_Reserva) VALUES
-(1, 5, 1, 2, 14, 14, 'Disponivel', '2011-06-08', '08:40:00'), (2, 3, 8, 13, 3, 3, 'Reservado', '2011-07-11', '09:30:00'),
-(3, 1, 1, 1, 14, 14, 'Reservado', '2011-08-14', '08:00:00'), (4, 4, 8, 29, 20, 20, 'Emprestado', '2011-08-18', '15:00:00'),
-(5, 8, 8, 30, 16, 16, 'Emprestado', '2011-08-19', '10:00:00'), (6, 10, 1, 3, 8, 8, 'Reservado', '2011-08-18', '15:00:00'),
-(7, 12, 1, 8, 25, 25, 'Disponivel', '2011-08-19', '09:00:00'), (8, 6, 8, 21, 24, 24, 'Disponivel', '2011-08-08', '08:15:00'),
-(9, 16, 1, 22, 13, 13, 'Disponivel', '2011-08-18', '18:00:00'), (10, 17, 1, 8, 22, 22, 'Reservado', '2011-08-15', '14:00:00');
+INSERT INTO Reserva (ID_Reserva, ID_Emprestimo, ID_Funcionario, ID_Usuario, ID_Estoque, Status_Livro, Data_Reserva, Hora_Reserva) VALUES
+(1, 5, 1, 2,  14, 'Disponivel', '2011-06-08', '08:40:00'), (2, 3, 8, 13, 3, 'Reservado', '2011-07-11', '09:30:00'),
+(3, 1, 1, 1,  14, 'Reservado', '2011-08-14', '08:00:00'), (4, 4, 8, 29, 20, 'Emprestado', '2011-08-18', '15:00:00'),
+(5, 8, 8, 30,  16, 'Emprestado', '2011-08-19', '10:00:00'), (6, 10, 1, 3,  8, 'Reservado', '2011-08-18', '15:00:00'),
+(7, 12, 1, 8,  25, 'Disponivel', '2011-08-19', '09:00:00'), (8, 6, 8, 21,  24, 'Disponivel', '2011-08-08', '08:15:00'),
+(9, 16, 1, 22, 13, 'Disponivel', '2011-08-18', '18:00:00'), (10, 17, 1, 8,  22, 'Reservado', '2011-08-15', '14:00:00');
 
 
 -- Inserindo multas baseadas nas devoluções com atraso identificadas no escopo
-INSERT INTO Financeiro_Multa (ID_Emprestimo, ID_Devolucao, Valor_Total, Dias_Atraso, Status_Multa) VALUES
-(16, 9, 20.00, 4, 'Pendente'),  -- Empréstimo 16: Entrega 22/08, Devolução 26/08 (4 dias)
-(7, 12, 15.00, 3, 'Pendente'),  -- Empréstimo 07: Entrega 27/03, Devolução 30/03 (3 dias)
-(13, 15, 30.00, 6, 'Pendente'), -- Empréstimo 13: Entrega 02/04, Devolução 08/04 (6 dias)
-(23, 18, 65.00, 13, 'Paga');    -- Empréstimo 23: Entrega 30/12, Devolução 12/01 (13 dias)
+INSERT INTO Financeiro_Multa ( ID_Devolucao, Valor_Total, Dias_Atraso, Status_Multa) VALUES
+( 9, 20.00, 4, 'Pendente'),  -- Empréstimo 16: Entrega 22/08, Devolução 26/08 (4 dias)
+( 12, 15.00, 3, 'Pendente'),  -- Empréstimo 07: Entrega 27/03, Devolução 30/03 (3 dias)
+( 15, 30.00, 6, 'Pendente'), -- Empréstimo 13: Entrega 02/04, Devolução 08/04 (6 dias)
+( 18, 65.00, 13, 'Paga');    -- Empréstimo 23: Entrega 30/12, Devolução 12/01 (13 dias)
 
 -- Registrando o pagamento da multa de maior valor (ID_Multa 4)
 INSERT INTO Financeiro_Pagamento (ID_Multa, Data_Pagamento, Forma_Pagamento) VALUES
 (4, '2013-01-12 15:30:00', 'Pix');
+
+INSERT INTO Usuario (ID_Endereco, Nome_Usuario, Telefone, CPF)
+SELECT ID_Endereco, Nome_Usuario, Telefone, CPF
+FROM Usuario
+WHERE ID_Usuario = 6;

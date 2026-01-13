@@ -76,14 +76,12 @@ CREATE TABLE Estoque (
 
 CREATE TABLE Financeiro_Multa (
   ID_Multa INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  ID_Emprestimo INTEGER UNSIGNED NOT NULL,
   ID_Devolucao INTEGER UNSIGNED NOT NULL,
   Valor_Total DECIMAL(10,2) NOT NULL,
   Dias_Atraso INTEGER UNSIGNED NOT NULL,
   Status_Multa ENUM('Pendente', 'Paga', 'Cancelada') NOT NULL DEFAULT 'Pendente',
   PRIMARY KEY(ID_Multa),
-  INDEX Financeiro_Multa_FKIndex1(ID_Devolucao),
-  INDEX Financeiro_Multa_FKIndex2(ID_Emprestimo)
+  INDEX Financeiro_Multa_FKIndex1(ID_Devolucao)
 );
 
 CREATE TABLE Financeiro_Pagamento (
@@ -122,7 +120,6 @@ CREATE TABLE Obra (
 
 CREATE TABLE Reserva (
   ID_Reserva INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  ID_Obra INTEGER UNSIGNED NOT NULL,
   ID_Usuario INTEGER UNSIGNED NOT NULL,
   ID_Estoque INTEGER UNSIGNED NOT NULL,
   ID_Funcionario INTEGER UNSIGNED NOT NULL,
@@ -134,8 +131,7 @@ CREATE TABLE Reserva (
   INDEX Reserva_FKIndex1(ID_Emprestimo),
   INDEX Reserva_FKIndex2(ID_Funcionario),
   INDEX Reserva_FKIndex3(ID_Estoque),
-  INDEX Reserva_FKIndex4(ID_Usuario),
-  INDEX Reserva_FKIndex5(ID_Obra)
+  INDEX Reserva_FKIndex4(ID_Usuario)
 );
 
 CREATE TABLE Usuario (
@@ -184,7 +180,6 @@ ADD CONSTRAINT FK_Devolucao_Emp FOREIGN KEY (ID_Emprestimo) REFERENCES Emprestim
 
 -- 8. Reserva (Obra, Usuario, Estoque, Funcionario e Emprestimo)
 ALTER TABLE Reserva 
-ADD CONSTRAINT FK_Reserva_Obra FOREIGN KEY (ID_Obra) REFERENCES Obra(ID_Obra),
 ADD CONSTRAINT FK_Reserva_User FOREIGN KEY (ID_Usuario) REFERENCES Usuario(ID_Usuario),
 ADD CONSTRAINT FK_Reserva_Estoque FOREIGN KEY (ID_Estoque) REFERENCES Estoque(ID_Estoque),
 ADD CONSTRAINT FK_Reserva_Func FOREIGN KEY (ID_Funcionario) REFERENCES Funcionario(ID_Funcionario),
@@ -192,7 +187,7 @@ ADD CONSTRAINT FK_Reserva_Emp FOREIGN KEY (ID_Emprestimo) REFERENCES Emprestimo(
 
 -- 9. NOVAS: Financeiro (Conectando Multas ao Emprestimo e Pagamentos às Multas)
 ALTER TABLE Financeiro_Multa
-ADD CONSTRAINT FK_Multa_Emprestimo FOREIGN KEY (ID_Emprestimo) REFERENCES Emprestimo(ID_Emprestimo);
+ADD CONSTRAINT FK_Multa_Devolucao FOREIGN KEY (ID_Devolucao) REFERENCES Devolucao(ID_Devolucao);
 
 ALTER TABLE Financeiro_Pagamento
 ADD CONSTRAINT FK_Pagamento_Multa FOREIGN KEY (ID_Multa) REFERENCES Financeiro_Multa(ID_Multa);
