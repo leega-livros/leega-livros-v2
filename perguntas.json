@@ -66,8 +66,7 @@
   {
     "numero": 14,
     "pergunta": "A Funcionária Alice Meire solicitou a alteração da obra Discurso do Método ’ para o gênero Político.",
-    "query_base": "UPDATE obra SET Genero = 'Política' WHERE Titulo_Obra = 'Discurso do Método';\n\nSELECT * FROM obra WHERE Titulo_Obra = 'Discurso do Método';"
-  },
+    "query_base": "UPDATE obra SET Genero = 'Política' WHERE Titulo_Obra = 'Discurso do Método';\n\nSELECT * FROM obra WHERE Titulo_Obra = 'Discurso do Método';"  },
   {
     "numero": 15,
     "pergunta": "A Recepcionista Alice Meire solicitou a alteração do bairro do usuário ‘Alberto Roberto’ que morava no ‘IAPI’ e agora mora no bairro de ‘Perdizes’.",
