@@ -194,7 +194,7 @@ INSERT INTO Financeiro_Multa ( ID_Devolucao, Valor_Total, Dias_Atraso, Status_Mu
 INSERT INTO Financeiro_Pagamento (ID_Multa, Data_Pagamento, Forma_Pagamento) VALUES
 (4, '2013-01-12 15:30:00', 'Pix');
 
-INSERT INTO Usuario (ID_Endereco, Nome_Usuario, Telefone, CPF)
+/* INSERT INTO Usuario (ID_Endereco, Nome_Usuario, Telefone, CPF)
 SELECT ID_Endereco, Nome_Usuario, Telefone, CPF
 FROM Usuario
-WHERE ID_Usuario = 6;
+WHERE ID_Usuario = 6; */
