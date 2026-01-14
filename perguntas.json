@@ -20,7 +20,7 @@
   {
     "numero": 4,
     "pergunta": "O Funcionário João Paulo Assistente de RH solicitou uma pesquisa que informasse todos os empréstimos que a Recepcionista Alice Meire fez no horário das 8 hs as 9 hs.",
-    "query_base": "SELECT\n    e.ID_Emprestimo,\n    e.Data_Emprestimo,\n    e.Hora_Emprestimo\nFROM Emprestimo e\nINNER JOIN Funcionario f\n    ON f.ID_Funcionario = e.ID_Funcionario\nWHERE f.Nome_Funcionario = 'Alice Meire'\n  AND e.Hora_Emprestimo BETWEEN '08:00:00' AND '08:59:59';",
+    "query_base": "SELECT \n    e.ID_Emprestimo, e.Data_Emprestimo, e.Hora_Emprestimo, f.Nome_Funcionario,\n    u.Nome_Usuario, o.Titulo_Obra\nFROM emprestimo e\nINNER JOIN funcionario f ON f.ID_Funcionario = e.ID_Funcionario\nINNER JOIN usuario u     ON u.ID_Usuario = e.ID_Usuario\nINNER JOIN estoque es    ON es.ID_Estoque = e.ID_Estoque\nINNER JOIN obra o        ON o.ID_Obra = es.ID_Obra\nWHERE f.Nome_Funcionario = 'Alice Meire'\n  AND e.Hora_Emprestimo >= '08:00:00'\n  AND e.Hora_Emprestimo <  '09:00:00'",
     "tipos": ["SELECT"]
   },
   {
@@ -43,8 +43,8 @@
   },
   {
     "numero": 8,
-    "pergunta": "A Gerência solicitou uma pesquisa para saber quais obras existem no acervo que são diferentes dos títulos das obras O Conde de Monte Cristo ’ e Filhos e Amantes ’",
-    "query_base": "SELECT\n    ID_Obra,\n    Titulo_Obra\nFROM Obra\nWHERE Titulo_Obra NOT IN ('O Conde de Monte Cristo', 'Filhos e Amantes');",
+    "pergunta": "A Gerência solicitou uma pesquisa para saber quais obras existem no acervo que são diferentes dos títulos das obras 'O Conde de Monte Cristo' e 'Filhos e Amantes'.",
+    "query_base": "SELECT ID_Obra, Titulo_Obra FROM Obra\nWHERE Titulo_Obra NOT IN ('O Conde de Monte Cristo', 'Filhos e Amantes');",
     "tipos": ["SELECT"]
   },
   {
@@ -68,7 +68,7 @@
   {
     "numero": 12,
     "pergunta": "A área de RH precisa identificar a quantidade total dos empréstimos feitos por cada funcionário ativo",
-    "query_base": "SELECT\n    f.ID_Funcionario,\n    f.Nome_Funcionario,\n    COUNT(e.ID_Emprestimo) AS Total_Emprestimos\nFROM Funcionario f\nLEFT JOIN Emprestimo e\n    ON e.ID_Funcionario = f.ID_Funcionario\nWHERE f.Data_Demissao IS NULL\nGROUP BY f.ID_Funcionario, f.Nome_Funcionario\nORDER BY Total_Emprestimos DESC;",
+    "query_base": "SELECT\n    f.ID_Funcionario,\n    f.Nome_Funcionario,\n    COUNT(e.ID_Emprestimo) AS Total_Emprestimos\nFROM funcionario f\nLEFT JOIN emprestimo e\n    ON e.ID_Funcionario = f.ID_Funcionario\nWHERE f.Data_Demissao = '9999-01-01'\nGROUP BY f.ID_Funcionario, f.Nome_Funcionario\nORDER BY Total_Emprestimos DESC;",
     "tipos": ["SELECT", "GROUP_BY", "ORDER_BY"]
   },
   {
