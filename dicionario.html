@@ -112,6 +112,12 @@
 
     <!-- Filtros -->
     <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
+      <!-- Abas -->
+      <div class="flex gap-2 mb-4">
+        <button id="tabColunas" class="px-3 py-2 rounded-xl border border-slate-300 bg-slate-900 text-white text-sm">Estrutura de Colunas</button>
+        <button id="tabTabelas" class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-sm text-slate-800">Catálogo de Tabelas</button>
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
         <div class="md:col-span-5">
           <label class="text-xs font-semibold text-slate-700">Buscar</label>
@@ -127,7 +133,7 @@
           </select>
         </div>
 
-        <div class="md:col-span-3 flex items-end gap-3">
+        <div id="filtersAdvanced" class="md:col-span-3 flex items-end gap-3">
           <label class="flex items-center gap-2 text-sm text-slate-700">
             <input id="onlyPK" type="checkbox" class="h-4 w-4 rounded border-slate-300" />
             só PK
@@ -159,25 +165,66 @@
       </noscript>
     </section>
 
-    <!-- Tabela -->
-    <section class="mt-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
-      <div class="table-wrap">
-        <table class="min-w-[1200px] w-full text-sm">
-          <thead class="bg-slate-100 text-slate-700">
-            <tr>
-              <th class="px-3 py-2 text-left border-b border-slate-200 sticky-col w-[180px]">Tabela</th>
-              <th class="px-3 py-2 text-left border-b border-slate-200 sticky-col-2 w-[220px]">Coluna</th>
-              <th class="px-3 py-2 text-left border-b border-slate-200">Tipo</th>
-              <th class="px-3 py-2 text-left border-b border-slate-200">Tamanho</th>
-              <th class="px-3 py-2 text-center border-b border-slate-200">PK</th>
-              <th class="px-3 py-2 text-center border-b border-slate-200">FK</th>
-              <th class="px-3 py-2 text-left border-b border-slate-200">Descrição</th>
-              <th class="px-3 py-2 text-left border-b border-slate-200">Exemplo</th>
-            </tr>
-          </thead>
+    <div id="viewColunas">
+      <!-- Tabela -->
+      <section class="mt-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <div class="table-wrap">
+          <table class="min-w-[1200px] w-full text-sm">
+            <thead class="bg-slate-100 text-slate-700">
+              <tr>
+                <th class="px-3 py-2 text-left border-b border-slate-200 sticky-col w-[180px]">Tabela</th>
+                <th class="px-3 py-2 text-left border-b border-slate-200 sticky-col-2 w-[220px]">Coluna</th>
+                <th class="px-3 py-2 text-left border-b border-slate-200">Tipo</th>
+                <th class="px-3 py-2 text-left border-b border-slate-200">Tamanho</th>
+                <th class="px-3 py-2 text-center border-b border-slate-200">PK</th>
+                <th class="px-3 py-2 text-center border-b border-slate-200">FK</th>
+                <th class="px-3 py-2 text-left border-b border-slate-200">Descrição</th>
+                <th class="px-3 py-2 text-left border-b border-slate-200">Exemplo</th>
+              </tr>
+            </thead>
 
-          <tbody id="tbody"></tbody>
-        </table>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Visão: Tabelas -->
+    <section id="viewTabelas" class="hidden mt-4">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
+        <div id="tabelaMeta" class="hidden">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 id="metaNome" class="text-lg font-semibold text-slate-900"></h2>
+              <p id="metaDesc" class="mt-1 text-sm text-slate-700"></p>
+            </div>
+            <span class="text-xs px-2 py-1 rounded-full border border-slate-200 text-slate-600">Metadados da tabela</span>
+          </div>
+
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="rounded-2xl border border-slate-200 p-4">
+              <div class="text-xs font-semibold text-slate-700">Uso em relatórios</div>
+              <div id="metaUso" class="mt-1 text-sm text-slate-700"></div>
+            </div>
+            <div class="rounded-2xl border border-slate-200 p-4">
+              <div class="text-xs font-semibold text-slate-700">Observações</div>
+              <div id="metaObs" class="mt-1 text-sm text-slate-700"></div>
+            </div>
+            <div class="rounded-2xl border border-slate-200 p-4">
+              <div class="text-xs font-semibold text-slate-700">Exemplos de perguntas</div>
+              <div id="metaPerg" class="mt-1 text-sm text-slate-700"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ✅ ALTERAÇÃO AQUI:
+             Antes: grid grid-cols-1 md:grid-cols-2 gap-3
+             Agora: lista vertical ocupando largura total -->
+        <div id="tabelasList" class="space-y-3"></div>
+
+        <div class="mt-4 text-xs text-slate-500">
+          Dica: selecione uma <b>Tabela</b> no filtro para ver o contexto (o que é, quando usar e armadilhas comuns).
+        </div>
       </div>
     </section>
 
@@ -186,7 +233,7 @@
     </p>
   </div>
 
-  <!-- ✅ Script no final (mais robusto). Mantém compatível com seu dicionario.js -->
+  <!-- ✅ Script no final -->
   <script src="dicionario.js"></script>
 </body>
 </html>

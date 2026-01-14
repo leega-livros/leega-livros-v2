@@ -1,0 +1,86 @@
+[
+  {
+    "tabela": "autor",
+    "descricao_funcional": "Cadastro de autores. Cada autor pode estar associado a várias obras.",
+    "uso_em_relatorios": "Use para análises por autor (quantidade de obras, títulos publicados, etc.).",
+    "observacoes": "Autor é entidade descritiva (dimensão); não representa movimentação."
+  },
+  {
+    "tabela": "cargo",
+    "descricao_funcional": "Cadastro de cargos da equipe da biblioteca, incluindo salário.",
+    "uso_em_relatorios": "Use para relatórios de RH (cargos, salários, distribuição por cargo).",
+    "observacoes": "Não confundir cargo com departamento: cargo descreve função; departamento descreve área."
+  },
+  {
+    "tabela": "departamento",
+    "descricao_funcional": "Cadastro de departamentos/áreas internas da biblioteca.",
+    "uso_em_relatorios": "Use para análises organizacionais (funcionários por departamento, movimentações por área).",
+    "observacoes": "Departamento é uma classificação organizacional, não evento."
+  },
+  {
+    "tabela": "devolucao",
+    "descricao_funcional": "Registra o evento de devolução de um empréstimo (quando o exemplar retorna).",
+    "uso_em_relatorios": "Use para métricas de devolução (pontualidade, atrasos, volume de devoluções por período).",
+    "observacoes": "Devolução está ligada ao empréstimo; a multa (se houver) normalmente nasce a partir do atraso."
+  },
+  {
+    "tabela": "editora",
+    "descricao_funcional": "Cadastro de editoras responsáveis pela publicação das obras.",
+    "uso_em_relatorios": "Use para relatórios por editora (acervo por editora, títulos publicados, etc.).",
+    "observacoes": "Editora é entidade descritiva; o endereço da editora vem da tabela endereco."
+  },
+  {
+    "tabela": "emprestimo",
+    "descricao_funcional": "Representa o fato consumado de retirada de um exemplar pelo usuário (empréstimo realizado).",
+    "uso_em_relatorios": "Fonte oficial para métricas de empréstimos (livros emprestados por período, por usuário, por funcionário).",
+    "observacoes": "Nem todo empréstimo vem de uma reserva. Para contar empréstimos, use emprestimo (não reserva)."
+  },
+  {
+    "tabela": "endereco",
+    "descricao_funcional": "Cadastro de endereços reutilizado por usuário e editora.",
+    "uso_em_relatorios": "Use para relatórios geográficos (usuários por cidade/estado, editoras por região).",
+    "observacoes": "A mesma tabela atende entidades diferentes; sempre filtre pelo join correto (usuario vs editora)."
+  },
+  {
+    "tabela": "estoque",
+    "descricao_funcional": "Representa o exemplar físico e sua disponibilidade (quantidade e valores).",
+    "uso_em_relatorios": "Use para métricas de acervo (disponibilidade, quantidade por obra, valor unitário).",
+    "observacoes": "Não confundir obra (título) com estoque (exemplar). Disponibilidade vem daqui, não da obra."
+  },
+  {
+    "tabela": "financeiro_multa",
+    "descricao_funcional": "Registra multas geradas (normalmente por atraso na devolução).",
+    "uso_em_relatorios": "Use para métricas financeiras (multas geradas, valores por período, status da multa).",
+    "observacoes": "Multa é um evento financeiro; o pagamento (se ocorrer) fica em financeiro_pagamento."
+  },
+  {
+    "tabela": "financeiro_pagamento",
+    "descricao_funcional": "Registra pagamentos realizados para quitação de multas.",
+    "uso_em_relatorios": "Use para relatórios de recebimentos (pagamentos por data, forma de pagamento, valores).",
+    "observacoes": "Nem toda multa é paga. Para inadimplência, compare multas vs pagamentos."
+  },
+  {
+    "tabela": "funcionario",
+    "descricao_funcional": "Cadastro de funcionários da biblioteca (vínculo com departamento e cargo).",
+    "uso_em_relatorios": "Use para relatórios internos (movimentações por funcionário, admissões/demissões, empréstimos atendidos).",
+    "observacoes": "Não confundir funcionario com usuario: funcionario é interno; usuario é cliente da biblioteca."
+  },
+  {
+    "tabela": "obra",
+    "descricao_funcional": "Cadastro da obra (título), com informações bibliográficas como gênero e publicação.",
+    "uso_em_relatorios": "Use para análises do catálogo (obras por gênero, por editora, por autor).",
+    "observacoes": "Obra não é exemplar físico. Para quantidade disponível, use estoque."
+  },
+  {
+    "tabela": "reserva",
+    "descricao_funcional": "Representa a intenção do usuário de realizar um empréstimo futuro (a retirada ainda não ocorreu).",
+    "uso_em_relatorios": "Use para métricas de reservas (fila/agenda, reservas por período). Não use para contar empréstimos concluídos.",
+    "observacoes": "Uma reserva pode ou não virar um empréstimo. Se existir vínculo com emprestimo, significa conversão."
+  },
+  {
+    "tabela": "usuario",
+    "descricao_funcional": "Cadastro de usuários (clientes) que realizam empréstimos e reservas.",
+    "uso_em_relatorios": "Use para relatórios de clientes (usuários ativos, histórico de empréstimos, perfil por região).",
+    "observacoes": "Status_Usuario indica situação do cadastro; não confundir com status do livro/exemplar."
+  }
+]
