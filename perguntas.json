@@ -278,8 +278,8 @@
   {
     "numero": 47,
     "pergunta": "Barbara do financeiro pediu para verificar qual a media do salario dos funcionários e quem são os que ganham mais do que a media em cada departamento.",
-    "query_base": "SELECT f.Nome_Funcionario,\n       c.Salario,\n       d.ID_Departamento,\n       m.media_salarial\nFROM funcionario f\nINNER JOIN cargo c\n    ON c.ID_Cargo = f.ID_Cargo\nINNER JOIN departamento d\n    ON d.ID_Departamento = f.ID_Departamento\nINNER JOIN (\n    SELECT f.ID_Departamento,\n           AVG(c.Salario) AS media_salarial\n    FROM funcionario f\n    INNER JOIN cargo c\n        ON c.ID_Cargo = f.ID_Cargo\n    GROUP BY f.ID_Departamento\n) m\nON m.ID_Departamento = f.ID_Departamento\nWHERE c.Salario > m.media_salarial;",
-    "tipos": ["SELECT", "GROUP_BY"]
+    "query_base": "-- 1. Consulta para ver a média geral de salários da biblioteca\nSELECT AVG(Salario) AS Media_Salarial_Geral FROM Cargo;\n\n-- 2. Lista de funcionários que ganham acima da média em seus departamentos\nSELECT \n    F.Nome_Funcionario, \n    D.Nome_Departamento, \n    C.Nome_Cargo, \n    C.Salario\nFROM Funcionario F\nJOIN Departamento D ON F.ID_Departamento = D.ID_Departamento\nJOIN Cargo C ON F.ID_Cargo = C.ID_Cargo \nWHERE C.Salario > (SELECT AVG(Salario) FROM Cargo);",
+    "tipos": ["SELECT", "GROUP_BY"] 
   },
   {
     "numero": 48,
