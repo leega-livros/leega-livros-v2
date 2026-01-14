@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Leega — Dicionário de Dados</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="ico.png" type="image/png">
+  <link rel="shortcut icon" href="ico.png" type="image/png">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* scroll horizontal pra tabela grande */
+    .table-wrap { overflow-x: auto; }
+
+    /* cabeçalho fixo (sticky) */
+    thead th { position: sticky; top: 0; z-index: 10; }
+
+    /* colunas iniciais fixas (tabela/coluna) */
+    .sticky-col { position: sticky; left: 0; z-index: 20; background: white; }
+    .sticky-col-2 { position: sticky; left: 180px; z-index: 20; background: white; }
+
+    /* ajuste p/ header sticky das colunas fixas */
+    thead .sticky-col,
+    thead .sticky-col-2 { background: #f1f5f9; } /* slate-100 */
+  </style>
+</head>
+
+<body class="bg-slate-100 text-slate-900 min-h-screen">
+  <div class="max-w-7xl mx-auto p-6">
+
+    <!-- Header -->
+    <header class="mb-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <img src="logo.png" alt="Leega" class="h-10 w-auto object-contain" />
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-semibold leading-tight">Dicionário de Dados</h1>
+            <p class="text-slate-600 text-sm">Catálogo de tabelas e colunas (busca + filtros).</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <a href="index.html"
+             class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-sm text-slate-800">
+            ← Voltar
+          </a>
+          <a href="schema.html"
+             class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-sm text-slate-800">
+            🏗️ Criar Banco
+          </a>
+          <a href="inserts.html"
+             class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-sm text-slate-800">
+            📥 Inserts
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Filtros -->
+    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+        <div class="md:col-span-5">
+          <label class="text-xs font-semibold text-slate-700">Buscar</label>
+          <input id="q" type="text" placeholder="Ex: ID_Usuario, reserva, varchar, multa..."
+                 class="mt-1 w-full px-3 py-2 rounded-xl bg-white border border-slate-300 outline-none focus:ring-2 focus:ring-slate-300" />
+        </div>
+
+        <div class="md:col-span-4">
+          <label class="text-xs font-semibold text-slate-700">Tabela</label>
+          <select id="fTabela"
+                  class="mt-1 w-full px-3 py-2 rounded-xl bg-white border border-slate-300 outline-none focus:ring-2 focus:ring-slate-300">
+            <option value="">Carregando...</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-3 flex items-end gap-3">
+          <label class="flex items-center gap-2 text-sm text-slate-700">
+            <input id="onlyPK" type="checkbox" class="h-4 w-4 rounded border-slate-300" />
+            só PK
+          </label>
+          <label class="flex items-center gap-2 text-sm text-slate-700">
+            <input id="onlyFK" type="checkbox" class="h-4 w-4 rounded border-slate-300" />
+            só FK
+          </label>
+          <button id="btnReset"
+                  class="ml-auto px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-sm text-slate-800">
+            Limpar
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-3 flex items-center justify-between text-sm text-slate-600">
+        <div id="count">—</div>
+        <div class="text-xs">Fonte: <span class="font-mono">dicionario.json</span></div>
+      </div>
+
+      <div id="erro" class="hidden mt-4 bg-red-50 border border-red-200 text-red-800 rounded-2xl p-4">
+        Não foi possível carregar o <span class="font-mono">dicionario.json</span>. Verifique se o arquivo está na mesma pasta.
+      </div>
+
+      <noscript>
+        <div class="mt-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-4">
+          Esta página precisa de JavaScript habilitado para carregar o dicionário.
+        </div>
+      </noscript>
+    </section>
+
+    <!-- Tabela -->
+    <section class="mt-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+      <div class="table-wrap">
+        <table class="min-w-[1200px] w-full text-sm">
+          <thead class="bg-slate-100 text-slate-700">
+            <tr>
+              <th class="px-3 py-2 text-left border-b border-slate-200 sticky-col w-[180px]">Tabela</th>
+              <th class="px-3 py-2 text-left border-b border-slate-200 sticky-col-2 w-[220px]">Coluna</th>
+              <th class="px-3 py-2 text-left border-b border-slate-200">Tipo</th>
+              <th class="px-3 py-2 text-left border-b border-slate-200">Tamanho</th>
+              <th class="px-3 py-2 text-center border-b border-slate-200">PK</th>
+              <th class="px-3 py-2 text-center border-b border-slate-200">FK</th>
+              <th class="px-3 py-2 text-left border-b border-slate-200">Descrição</th>
+              <th class="px-3 py-2 text-left border-b border-slate-200">Exemplo</th>
+            </tr>
+          </thead>
+
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="mt-4 text-xs text-slate-500">
+      Dica: use a busca para encontrar colunas rapidamente (ex.: <span class="font-mono">ID_Obra</span>, <span class="font-mono">status_livro</span>).
+    </p>
+  </div>
+
+  <!-- ✅ Script no final (mais robusto). Mantém compatível com seu dicionario.js -->
+  <script src="dicionario.js"></script>
+</body>
+</html>

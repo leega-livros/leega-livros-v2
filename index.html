@@ -7,16 +7,14 @@
   <link rel="icon" href="ico.png" type="image/png">
   <link rel="shortcut icon" href="ico.png" type="image/png">
 
-
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Prism.js (syntax highlight SQL) - tema claro/clean -->
+  <!-- Prism.js -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.css">
   <script defer src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-sql.min.js"></script>
 
-  <!-- Ajustes leves para ficar mais "IDE" (clean) -->
   <style>
     pre[class*="language-"] {
       margin: 0;
@@ -28,8 +26,6 @@
     code[class*="language-"] {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
-
-    /* remove o marcador padrão do summary no Chrome/Safari */
     details > summary::-webkit-details-marker { display: none; }
   </style>
 </head>
@@ -41,15 +37,12 @@
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <!-- Logo + Títulos -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-          <img
-            src="logo.png"
-            alt="Leega"
-            class="h-12 sm:h-10 w-auto object-contain self-start sm:self-auto"
-          />
+          <img src="logo.png" alt="Leega"
+               class="h-12 sm:h-10 w-auto object-contain self-start sm:self-auto" />
 
           <div>
             <h1 class="text-2xl sm:text-3xl font-semibold leading-tight">
-              Queries do Case — Biblioteca
+              Grupo 09 — Biblioteca
             </h1>
             <p class="text-slate-600">
               Editar e treinar consultas SQL
@@ -57,9 +50,16 @@
           </div>
         </div>
 
-        <!-- Ações (links + dropdown) -->
+        <!-- Ações -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto">
           <div class="flex flex-wrap gap-2">
+
+            <!-- ✅ DICIONÁRIO PRIMEIRO -->
+            <a href="dicionario.html"
+              class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-sm text-slate-800">
+              📚 Dicionário
+            </a>
+
             <a href="schema.html"
               class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-sm text-slate-800">
               🏗️ Criar Banco
@@ -94,65 +94,8 @@
       </div>
     </header>
 
-    <!-- Busca -->
-    <div class="flex flex-col sm:flex-row gap-3 mb-3">
-      <input
-        id="busca"
-        placeholder="Buscar por número (ex: 4) ou texto (ex: multa, editora, devolução)"
-        class="w-full px-4 py-3 rounded-xl bg-white border border-slate-300 outline-none focus:ring-2 focus:ring-slate-300"
-      >
-    </div>
+    <!-- resto do arquivo permanece igual -->
 
-    <!-- Filtros suspensos -->
-    <div class="flex flex-col sm:flex-row gap-3 mb-4">
-
-      <!-- Tipos -->
-      <div class="relative w-full sm:w-[260px]">
-        <button id="btnTipos" type="button"
-          class="w-full flex justify-between items-center px-4 py-2 rounded-xl border bg-white hover:bg-slate-50 text-sm">
-          <span class="font-semibold">Tipos</span><span>▼</span>
-        </button>
-
-        <div id="menuTipos"
-          class="hidden absolute z-50 mt-2 w-full rounded-xl border bg-white shadow-xl p-3 max-h-[300px] overflow-auto">
-          <div class="flex justify-between mb-2">
-            <span class="text-xs font-semibold text-slate-600">Selecione</span>
-            <button id="limparTipos" class="text-xs hover:underline">Limpar</button>
-          </div>
-          <div id="listaTipos" class="space-y-2"></div>
-        </div>
-
-        <p id="resumoTipos" class="text-xs text-slate-500 mt-1"></p>
-      </div>
-
-      <!-- Tags -->
-      <div class="relative w-full sm:w-[320px]">
-        <button id="btnTags" type="button"
-          class="w-full flex justify-between items-center px-4 py-2 rounded-xl border bg-white hover:bg-slate-50 text-sm">
-          <span class="font-semibold">Tags</span><span>▼</span>
-        </button>
-
-        <div id="menuTags"
-          class="hidden absolute z-50 mt-2 w-full rounded-xl border bg-white shadow-xl p-3 max-h-[360px] overflow-auto">
-          <div class="flex justify-between mb-2">
-            <span class="text-xs font-semibold text-slate-600">Selecione</span>
-            <button id="limparTags" class="text-xs hover:underline">Limpar</button>
-          </div>
-
-          <div class="flex items-center gap-2 mb-3">
-            <span class="text-xs">Modo:</span>
-            <button id="modoAny" class="px-2 py-1 text-xs rounded-lg border bg-slate-900 text-white">Qualquer</button>
-            <button id="modoAll" class="px-2 py-1 text-xs rounded-lg border bg-white">Todas</button>
-          </div>
-
-          <div id="listaTags" class="space-y-2"></div>
-        </div>
-
-        <p id="resumoTags" class="text-xs text-slate-500 mt-1"></p>
-      </div>
-    </div>
-
-    <!-- Lista -->
     <div id="lista" class="space-y-6"></div>
   </div>
 
