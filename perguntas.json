@@ -230,7 +230,7 @@
   {
     "numero": 39,
     "pergunta": "Foi solicitado a busca de informações de todas as obras que foram reservadas no dia 18/08/11 as 15:00 e o nome do responsável pela reserva.",
-    "query_base": "SELECT rv.Id_reserva,rv.Data_reserva, rv.Hora_reserva,fcr.Nome_Funcionario,obr.Titulo_obra\nFROM reserva rv, funcionario fcr, obra obr\nwhere rv.ID_Funcionario = fcr.ID_Funcionario\nand obr.ID_obra = rv.id_obra\nand rv.status_livro = 'Reservado'\nand rv.data_reserva = '2011-08-18'\nand rv.hora_reserva = '15:00:00';",
+    "query_base": "SELECT \n    o.Titulo_Obra,\n    f.Nome_Funcionario,\n    r.Data_Reserva,\n    r.Hora_Reserva\nFROM reserva r\nINNER JOIN estoque es\n    ON es.ID_Estoque = r.ID_Estoque\nINNER JOIN obra o\n    ON o.ID_Obra = es.ID_Obra\nINNER JOIN funcionario f\n    ON f.ID_Funcionario = r.ID_Funcionario\nWHERE r.Data_Reserva = '2011-08-18'\n  AND r.Hora_Reserva = '15:00:00';",
     "tipos": ["SELECT"]
   },
   {
