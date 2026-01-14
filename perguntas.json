@@ -134,7 +134,7 @@
   {
     "numero": 23,
     "pergunta": "A Diretoria solicitou a exclusão do campo Valor_Livro da tabela Obra pois, o pedido feito pelo Financeiro estava errado.",
-    "query_base": "ALTER TABLE Obra\nDROP COLUMN Valor_Livro;",
+    "query_base": "/* No caso da coluna não existir, rode o Add Column abaixo\nALTER TABLE obra\n\tADD COLUMN Valor_Livro DECIMAL(10,2) NOT NULL DEFAULT 0.00; */\n\nALTER TABLE Obra\nDROP COLUMN Valor_Livro;",
     "tipos": ["ALTER","DROP"]
   },
   {
@@ -176,7 +176,7 @@
   {
     "numero": 30,
     "pergunta": "A Diretoria solicitou a lista de todos os funcionários da Biblioteca com seus respectivos departamentos que tem idade entre 30 e 40 anos.",
-    "query_base": "SELECT\n    f.ID_Funcionario,\n    f.Nome_Funcionario,\n    d.Nome_Departamento,\n    TIMESTAMPDIFF(YEAR, f.Data_Admissao, CURDATE()) AS Tempo_Empresa_Aproximado\nFROM Funcionario f\nINNER JOIN Departamento d\n    ON d.ID_Departamento = f.ID_Departamento\nWHERE TIMESTAMPDIFF(YEAR, f.Data_Admissao, CURDATE()) BETWEEN 30 AND 40;",
+    "query_base": "/* como a base de origem nao fornece dados de idade do funcionario\nfoi realizado calculo de tempo de empresa: diferenca entre data de admissao e data atual */\nSELECT\n    f.ID_Funcionario,\n    f.Nome_Funcionario,\n    d.Nome_Departamento,\n    TIMESTAMPDIFF(YEAR, f.Data_Admissao, CURDATE()) AS Tempo_Empresa_Aproximado\nFROM Funcionario f\nINNER JOIN Departamento d\n    ON d.ID_Departamento = f.ID_Departamento\nWHERE TIMESTAMPDIFF(YEAR, f.Data_Admissao, CURDATE()) BETWEEN 30 AND 40;",
     "tipos": ["SELECT"]
   },
   {
@@ -284,7 +284,7 @@
   {
     "numero": 48,
     "pergunta": "Carlos pediu que seja feita uma pesquisa informando de todos os usuários que tem cadastro na biblioteca e que nunca levaram livros mostrar o nome de todos em Maiúsculas.",
-    "query_base": "SELECT\n    UPPER(u.Nome_Usuario) AS Nome_Usuario\nFROM Usuario u\nLEFT JOIN Emprestimo e\n    ON e.ID_Usuario = u.ID_Usuario\nWHERE e.ID_Emprestimo IS NULL;",
+    "query_base": "SELECT\n    u.id_usuario, e.id_emprestimo, UPPER(u.Nome_Usuario) AS Nome_Usuario\nFROM usuario u\nLEFT JOIN emprestimo e\n    ON e.ID_Usuario = u.ID_Usuario\nWHERE e.ID_Emprestimo IS NULL\nORDER BY Nome_Usuario;",
     "tipos": ["SELECT"]
   },
   {
@@ -326,7 +326,7 @@
   {
     "numero": 55,
     "pergunta": "Foi solicitado a criação de uma visão que traga todos os livros e o preço da editora Leya.",
-    "query_base": "CREATE OR REPLACE VIEW vw_livros_preco_leya AS\nSELECT\n    o.Titulo_Obra AS Livro,\n    es.Valor_Unitario AS Preco\nFROM Obra o\nINNER JOIN Editora ed\n    ON ed.ID_Editora = o.ID_Editora\nINNER JOIN Estoque es\n    ON es.ID_Obra = o.ID_Obra\nWHERE ed.Nome_Editora = 'Leya';",
+    "query_base": "CREATE OR REPLACE VIEW vw_livros_preco_leya AS\nSELECT\n    o.Titulo_Obra AS Livro,\n    es.Valor_Unitario AS Preco\nFROM Obra o\nINNER JOIN Editora ed\n    ON ed.ID_Editora = o.ID_Editora\nINNER JOIN Estoque es\n    ON es.ID_Obra = o.ID_Obra\nWHERE ed.Nome_Editora = 'Leya';\n\nselect* from vw_livros_preco_leya;",
     "tipos": ["SELECT", "VIEW"]
   },
   {
